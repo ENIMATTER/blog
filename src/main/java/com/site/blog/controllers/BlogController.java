@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Date;
+
 @Controller
 public class BlogController {
 
@@ -30,7 +32,7 @@ public class BlogController {
 
     @PostMapping("/blog/add")
     public String blogPostAdd(@RequestParam String title, @RequestParam String anons, @RequestParam String full_text) {
-        Post post = new Post(title, anons, full_text);
+        Post post = new Post(title, anons, full_text, new Date());
         postRepository.save(post);
         return "redirect:/blog";
     }

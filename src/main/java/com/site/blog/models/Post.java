@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.util.Date;
 
 @Entity
 public class Post {
@@ -14,6 +15,7 @@ public class Post {
 
     private String title, anons, full_text;
     private int views;
+    private Date date;
 
     public long getId() {
         return id;
@@ -58,12 +60,21 @@ public class Post {
         this.views = views;
     }
 
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
     public Post() {
     }
 
-    public Post(String title, String anons, String full_text) {
+    public Post(String title, String anons, String full_text, Date date) {
         this.title = title;
         this.anons = anons;
         this.full_text = full_text;
+        this.date = date;
     }
 }

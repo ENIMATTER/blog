@@ -10,10 +10,12 @@
 
 <div class="container mt-5">
     <div th:each="el : ${post}" class="alert alert-info mt-2">
-        <h1 th:text="${el.getTitle()}"/>
-        <p th:text="${el.getFullText()}"/>
 
+        <h1 th:text="${el.getTitle()}"/>
+        <h4 th:text="${el.getAnons()}"/>
+        <p th:text="${el.getFullText()}"/>
         <b><p th:text="'Views: ' + ${el.getViews()}"/></b>
+        <b><p th:text="'Added: ' + ${el.getDate()}"/></b>
 
         <form th:action="'/blog/' + ${el.getId()} + '/remove'" method="post">
             <a th:href="'/blog'" class="btn btn-warning" type="submit">Back to articles</a>
