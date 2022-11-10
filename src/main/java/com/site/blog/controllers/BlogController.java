@@ -1,5 +1,6 @@
 package com.site.blog.controllers;
 
+import com.site.blog.WebSecurityConfig;
 import com.site.blog.models.Post;
 import com.site.blog.repo.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,8 @@ public class BlogController {
     @Autowired
     private PostRepository postRepository;
 
+    WebSecurityConfig webSecurityConfig;
+
     @GetMapping("/blog")
     public String blogMain(Model model) {
         Iterable<Post> posts = postRepository.findAll();
@@ -27,6 +30,8 @@ public class BlogController {
 
     @GetMapping("/blog/add")
     public String blogAdd() {
+
+
         return "blog-add";
     }
 
