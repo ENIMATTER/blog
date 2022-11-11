@@ -14,7 +14,7 @@
         <form th:action="'/blog/' + ${el.getId()} + '/edit'" method = "post">
             <input type="text" th:value="${el.getTitle()}" name="title" placeholder="Enter a title of the article" class="form-control"><br>
             <input type="text" th:value="${el.getAnons()}" name="anons" placeholder="Enter a announcement of the article" class="form-control"><br>
-            <textarea name="full_text" placeholder="Enter a full text of the article" class="form-control" th:text="${el.getFullText()}"/><br>
+            <textarea name="fullText" placeholder="Enter a full text of the article" class="form-control" th:text="${el.getFullText()}"/><br>
             <button type="submit" class="btn btn-success">Update</button>
         </form>
     </div>
