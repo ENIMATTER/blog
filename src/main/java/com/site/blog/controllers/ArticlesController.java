@@ -4,7 +4,6 @@ import com.site.blog.models.People;
 import com.site.blog.models.Articles;
 import com.site.blog.repo.PeopleRepository;
 import com.site.blog.repo.ArticlesRepository;
-import com.site.blog.repo.RolesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,19 +22,16 @@ public class ArticlesController {
     @Autowired
     private PeopleRepository peopleRepository;
 
-    @Autowired
-    private RolesRepository rolesRepository;
-
     @GetMapping("/articles")
     public String articlesMain(Model model) {
         Iterable<Articles> articles = articlesRepository.findAll();
         model.addAttribute("articles", articles);
-        return "articles-main";
+        return "articles-templates/articles-main";
     }
 
     @GetMapping("/articles/add")
     public String articlesAdd() {
-        return "articles-add";
+        return "articles-templates/articles-add";
     }
 
     @PostMapping("/articles/add")
@@ -59,7 +55,7 @@ public class ArticlesController {
         }
         Articles articles = articlesRepository.findById(id).orElseThrow();
         model.addAttribute("articles", articles);
-        return "articles-details";
+        return "articles-templates/articles-details";
     }
 
     @PostMapping("/articles/{id}")
@@ -78,7 +74,7 @@ public class ArticlesController {
         }
         Articles articles = articlesRepository.findById(id).orElseThrow();
         model.addAttribute("articles", articles);
-        return "articles-edit";
+        return "articles-templates/articles-edit";
     }
 
     @PostMapping("/articles/{id}/edit")

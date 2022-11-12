@@ -29,12 +29,12 @@ public class PeopleController {
     public String peopleMain(Model model) {
         Iterable<People> people = peopleRepository.findAll();
         model.addAttribute("people", people);
-        return "people-main";
+        return "people-templates/people-main";
     }
 
     @GetMapping("/people/add")
     public String peopleAdd() {
-        return "people-add";
+        return "people-templates/people-add";
     }
 
     @PostMapping("/people/add")
@@ -58,7 +58,7 @@ public class PeopleController {
         }
         People people = peopleRepository.findById(id).orElseThrow();
         model.addAttribute("people", people);
-        return "people-edit";
+        return "people-templates/people-edit";
     }
 
     @PostMapping("/people/{id}/edit")

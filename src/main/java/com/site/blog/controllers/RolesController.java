@@ -25,12 +25,12 @@ public class RolesController {
     public String rolesMain(Model model) {
         Iterable<Roles> roles = rolesRepository.findAll();
         model.addAttribute("roles", roles);
-        return "roles-main";
+        return "roles-templates/roles-main";
     }
 
     @GetMapping("/roles/add")
     public String rolesAdd() {
-        return "roles-add";
+        return "roles-templates/roles-add";
     }
 
     @PostMapping("/roles/add")
@@ -47,7 +47,7 @@ public class RolesController {
         }
         Roles roles = rolesRepository.findById(id).orElseThrow();
         model.addAttribute("roles", roles);
-        return "roles-edit";
+        return "roles-templates/roles-edit";
     }
 
     @PostMapping("/roles/{id}/edit")

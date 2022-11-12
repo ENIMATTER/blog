@@ -26,11 +26,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/blog/add").hasRole("ADMIN")
-                .antMatchers("/blog/{id}/edit").hasRole("ADMIN")
-                .antMatchers("/blog/{id}/remove").hasRole("ADMIN")
-                .antMatchers("/blog").hasAnyRole("USER", "ADMIN")
-                .antMatchers("/blog/{id}").hasAnyRole("USER", "ADMIN")
+                .antMatchers("/articles/add").hasRole("ADMIN")
+                .antMatchers("/articles/{id}/edit").hasRole("ADMIN")
+                .antMatchers("/articles/{id}/remove").hasRole("ADMIN")
+                .antMatchers("/articles").hasAnyRole("USER", "ADMIN")
+                .antMatchers("/articles/{id}").hasAnyRole("USER", "ADMIN")
+
+                .antMatchers("/people/add").hasRole("ADMIN")
+                .antMatchers("/people/{id}/edit").hasRole("ADMIN")
+                .antMatchers("/people/{id}/remove").hasRole("ADMIN")
+                .antMatchers("/people").hasAnyRole("USER", "ADMIN")
+
+                .antMatchers("/roles/add").hasRole("ADMIN")
+                .antMatchers("/roles/{id}/edit").hasRole("ADMIN")
+                .antMatchers("/roles/{id}/remove").hasRole("ADMIN")
+                .antMatchers("/roles").hasAnyRole("USER", "ADMIN")
+
                 .antMatchers("/").permitAll()
                 .antMatchers("/about").permitAll()
                 .and().formLogin();
