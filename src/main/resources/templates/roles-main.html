@@ -11,12 +11,17 @@
 <div class="container mt-5">
     <h1>Roles</h1>
     <div th:each="el : ${roles}" class="alert alert-info mt-2">
-        <h3 th:text="${el.getName_role()}"/>
-<!--        <p th:text="${el.getRole_id().getName_role()}"/>-->
+        <h3 th:text="${el.getName_role()}" style="margin: 10px;"/>
 
-<!--        <form th:action="'/blog/' + ${el.getId()}" method="post">-->
-<!--            <button class="btn btn-warning" type="submit">More</button>-->
-<!--        </form>-->
+        <div style="display: flex;">
+            <form th:action="'/roles/' + ${el.getId()} + '/edit'" method="get">
+                <button class="btn btn-warning" type="submit" style="margin: 10px;">Edit</button>
+            </form>
+
+            <form th:action="'/roles/' + ${el.getId()} + '/remove'" method="post">
+                <button class="btn btn-warning" type="submit" style="margin: 10px;">Remove</button>
+            </form>
+        </div>
     </div>
 </div>
 

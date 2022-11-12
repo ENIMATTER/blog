@@ -10,13 +10,16 @@
 
 <div class="container mt-5">
     <h1>Articles</h1>
-    <div th:each="el : ${posts}" class="alert alert-info mt-2">
-        <h3 th:text="${el.getTitle()}"/>
-        <p th:text="${el.getAnons()}"/>
+    <div th:each="el : ${articles}" class="alert alert-info mt-2">
+        <div style="margin: 10px;">
+            <h3 th:text="${el.getTitle()}"/>
+            <p th:text="${el.getAnons()}"/>
+            <b><p th:text="${el.getPeople_id().getName_people()} + ' ' + ${el.getPeople_id().getSurname_people()}"/></b>
 
-        <form th:action="'/blog/' + ${el.getId()}" method="post">
-            <button class="btn btn-warning" type="submit">More</button>
-        </form>
+            <form th:action="'/articles/' + ${el.getId()}" method="post">
+                <button class="btn btn-warning" type="submit">More</button>
+            </form>
+        </div>
     </div>
 </div>
 

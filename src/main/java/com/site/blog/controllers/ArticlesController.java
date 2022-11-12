@@ -28,8 +28,8 @@ public class ArticlesController {
 
     @GetMapping("/articles")
     public String articlesMain(Model model) {
-        Iterable<Articles> posts = articlesRepository.findAll();
-        model.addAttribute("posts", posts);
+        Iterable<Articles> articles = articlesRepository.findAll();
+        model.addAttribute("articles", articles);
         return "articles-main";
     }
 
@@ -40,17 +40,15 @@ public class ArticlesController {
 
     @PostMapping("/articles/add")
     public String articlesPostAdd(@RequestParam String title, @RequestParam String anons,
-                                  @RequestParam String fullText, @RequestParam String nameAuthor,
+                                  @RequestParam String full_text, @RequestParam String nameAuthor,
                                   @RequestParam String surnameAuthor) {
         Iterable<People> peopleRepo = peopleRepository.findAll();
-
         for(People human : peopleRepo){
             if(human.getName_people().equals(nameAuthor) && human.getSurname_people().equals(surnameAuthor)){
-                Articles post = new Articles(title, anons, fullText, new Date(), human);
-                articlesRepository.save(post);
+                Articles articles = new Articles(title, anons, full_text, new Date(), human);
+                articlesRepository.save(articles);
             }
         }
-
         return "redirect:/articles";
     }
 
@@ -59,23 +57,17 @@ public class ArticlesController {
         if (!articlesRepository.existsById(id)) {
             return "redirect:/articles";
         }
-
-        Articles post = articlesRepository.findById(id).orElseThrow();
-
-        model.addAttribute("post", post);
-
+        Articles articles = articlesRepository.findById(id).orElseThrow();
+        model.addAttribute("articles", articles);
         return "articles-details";
-
     }
 
     @PostMapping("/articles/{id}")
     public String articlesPostDetails(@PathVariable(value = "id") long id) {
-        Articles post = articlesRepository.findById(id).orElseThrow();
-
-        int views = post.getViews();
-        post.setViews(views+1);
-        articlesRepository.save(post);
-
+        Articles articles = articlesRepository.findById(id).orElseThrow();
+        int views = articles.getViews();
+        articles.setViews(views+1);
+        articlesRepository.save(articles);
         return "redirect:/articles/{id}";
     }
 
@@ -84,32 +76,33 @@ public class ArticlesController {
         if (!articlesRepository.existsById(id)) {
             return "redirect:/articles";
         }
-
-        Articles post = articlesRepository.findById(id).orElseThrow();
-
-        model.addAttribute("post", post);
+        Articles articles = articlesRepository.findById(id).orElseThrow();
+        model.addAttribute("articles", articles);
         return "articles-edit";
-
     }
 
     @PostMapping("/articles/{id}/edit")
-    public String articlesPostEdit(@PathVariable(value = "id") long id, @RequestParam String title, @RequestParam String anons, @RequestParam String fullText) {
-        Articles post = articlesRepository.findById(id).orElseThrow();
-
-        post.setTitle(title);
-        post.setAnons(anons);
-        post.setFull_text(fullText);
-
-        articlesRepository.save(post);
-
+    public String articlesPostEdit(@PathVariable(value = "id") long id, @RequestParam String title,
+                                   @RequestParam String anons, @RequestParam String full_text,
+                                   @RequestParam String nameAuthor, @RequestParam String surnameAuthor) {
+        Articles articles = articlesRepository.findById(id).orElseThrow();
+        Iterable<People> peopleRepo = peopleRepository.findAll();
+        for(People human : peopleRepo){
+            if(human.getName_people().equals(nameAuthor) && human.getSurname_people().equals(surnameAuthor)){
+                articles.setTitle(title);
+                articles.setAnons(anons);
+                articles.setFull_text(full_text);
+                articles.setPeople_id(human);
+                articlesRepository.save(articles);
+            }
+        }
         return "redirect:/articles";
     }
 
     @PostMapping("/articles/{id}/remove")
     public String articlesPostDelete(@PathVariable(value = "id") long id) {
-        Articles post = articlesRepository.findById(id).orElseThrow();
-        articlesRepository.delete(post);
-
+        Articles articles = articlesRepository.findById(id).orElseThrow();
+        articlesRepository.delete(articles);
         return "redirect:/articles";
     }
 }

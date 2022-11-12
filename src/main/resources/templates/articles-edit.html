@@ -10,11 +10,13 @@
 
 <div class="container mt-5 mb-5">
     <h1>Article editing</h1><br>
-    <div th:each="el : ${post}">
-        <form th:action="'/blog/' + ${el.getId()} + '/edit'" method = "post">
-            <input type="text" th:value="${el.getTitle()}" name="title" placeholder="Enter a title of the article" class="form-control"><br>
-            <input type="text" th:value="${el.getAnons()}" name="anons" placeholder="Enter a announcement of the article" class="form-control"><br>
-            <textarea name="fullText" placeholder="Enter a full text of the article" class="form-control" th:text="${el.getFullText()}"/><br>
+    <div>
+        <form th:action="'/articles/' + ${articles.getId()} + '/edit'" method = "post">
+            <input type="text" th:value="${articles.getTitle()}" name="title" placeholder="Enter a title of the article" class="form-control"><br>
+            <input type="text" th:value="${articles.getAnons()}" name="anons" placeholder="Enter a announcement of the article" class="form-control"><br>
+            <textarea name="full_text" placeholder="Enter a full text of the article" class="form-control" th:text="${articles.getFull_text()}"/><br>
+            <input type="text" th:value="${articles.people_id.getName_people()}" name="nameAuthor" placeholder="Enter a name of the author" class="form-control"><br>
+            <input type="text" th:value="${articles.people_id.getSurname_people()}" name="surnameAuthor" placeholder="Enter a surname of the author" class="form-control"><br>
             <button type="submit" class="btn btn-success">Update</button>
         </form>
     </div>
