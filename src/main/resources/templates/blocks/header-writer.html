@@ -1,4 +1,4 @@
-<div th:fragment="header">
+<div th:fragment="header-writer">
     <div class="d-flex flex-column flex-md-row align-items-center pb-3 mb-4 border-bottom" style="margin-top: 15px;">
         <a href="/" class="d-flex align-items-center text-dark text-decoration-none">
             <span class="fs-4" style="margin-left: 50px;" >Blog</span>
@@ -8,12 +8,10 @@
             <a class="me-3 py-2 text-dark text-decoration-none" href="/">Main</a>
             <a class="me-3 py-2 text-dark text-decoration-none" href="/articles">Articles</a>
             <a class="me-3 py-2 text-dark text-decoration-none" href="/articles/add">Add an article</a>
-            <a class="me-3 py-2 text-dark text-decoration-none" href="/people">People</a>
-            <a class="me-3 py-2 text-dark text-decoration-none" href="/people/add">Add a human</a>
-            <a class="me-3 py-2 text-dark text-decoration-none" href="/roles">Roles</a>
-            <a class="me-3 py-2 text-dark text-decoration-none" href="/roles/add">Add a role</a>
             <a class="me-3 py-2 text-dark text-decoration-none" href="/about">About</a>
-            <a class="me-3 py-2 text-dark text-decoration-none" href="/logout">Log out</a>
+            <form th:action="'/log-out'" method = "post">
+                <button class="btn btn-success" type="submit" style="margin-right: 15px;">Log out</button>
+            </form>
         </nav>
     </div>
 </div>
