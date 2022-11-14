@@ -92,7 +92,7 @@ public class PeopleController {
         Iterable<Articles> articlesRepo = articlesRepository.findAll();
         for(Articles articles : articlesRepo){
             if(articles.getPeople_id().getId() == people.getId()){
-                return "redirect:/people";
+                articlesRepository.delete(articles);
             }
         }
         peopleRepository.delete(people);

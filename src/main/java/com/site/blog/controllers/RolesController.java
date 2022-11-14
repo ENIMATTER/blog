@@ -1,7 +1,9 @@
 package com.site.blog.controllers;
 
+import com.site.blog.models.Articles;
 import com.site.blog.models.People;
 import com.site.blog.models.Roles;
+import com.site.blog.repo.ArticlesRepository;
 import com.site.blog.repo.PeopleRepository;
 import com.site.blog.repo.RolesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,9 @@ public class RolesController {
 
     @Autowired
     private PeopleRepository peopleRepository;
+
+    @Autowired
+    private ArticlesRepository articlesRepository;
 
     @GetMapping("/roles")
     public String rolesMain(Model model) {
@@ -67,9 +72,15 @@ public class RolesController {
     public String rolesPostDelete(@PathVariable(value = "id") long id) {
         Roles roles = rolesRepository.findById(id).orElseThrow();
         Iterable<People> peopleRepo = peopleRepository.findAll();
+        Iterable<Articles> articlesRepo = articlesRepository.findAll();
         for(People people : peopleRepo){
             if(roles.getId() == people.getRole_id().getId()){
-                return "redirect:/roles";
+                for(Articles articles : articlesRepo){
+                    if(people.getId() == articles.getPeople_id().getId()){
+                        articlesRepository.delete(articles);
+                    }
+                }
+                peopleRepository.delete(people);
             }
         }
         rolesRepository.delete(roles);

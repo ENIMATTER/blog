@@ -8,7 +8,6 @@
 
 <body th:if="${initialRole.getName_role() == 'Writer' || initialRole.getName_role() == 'Admin'}">
 <header th:if="${initialRole.getName_role() == 'Admin'}" th:insert="blocks/header-admin :: header-admin"></header>
-
 <header th:if="${initialRole.getName_role() == 'Writer'}" th:insert="blocks/header-writer :: header-writer"></header>
 
 <div class="container mt-5 mb-5">
@@ -17,8 +16,6 @@
         <input type="text" name="title" placeholder="Enter a title of the article" class="form-control"><br>
         <input type="text" name="anons" placeholder="Enter a announcement of the article" class="form-control"><br>
         <textarea name="full_text" placeholder="Enter a full text of the article" class="form-control"></textarea><br>
-        <input type="text" name="nameAuthor" placeholder="Enter a name of the author" class="form-control"><br>
-        <input type="text" name="surnameAuthor" placeholder="Enter a surname of the author" class="form-control"><br>
         <button type="submit" class="btn btn-success">Add article</button>
     </form>
 </div>

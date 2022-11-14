@@ -40,15 +40,9 @@ public class ArticlesController {
 
     @PostMapping("/articles/add")
     public String articlesPostAdd(@RequestParam String title, @RequestParam String anons,
-                                  @RequestParam String full_text, @RequestParam String nameAuthor,
-                                  @RequestParam String surnameAuthor) {
-        Iterable<People> peopleRepo = peopleRepository.findAll();
-        for(People human : peopleRepo){
-            if(human.getName_people().equals(nameAuthor) && human.getSurname_people().equals(surnameAuthor)){
-                Articles articles = new Articles(title, anons, full_text, new Date(), human);
-                articlesRepository.save(articles);
-            }
-        }
+                                  @RequestParam String full_text) {
+        Articles articles = new Articles(title, anons, full_text, new Date(), initialHuman);
+        articlesRepository.save(articles);
         return "redirect:/articles";
     }
 
@@ -59,7 +53,7 @@ public class ArticlesController {
         }
         Articles articles = articlesRepository.findById(id).orElseThrow();
         model.addAttribute("articles", articles);
-        model.addAttribute("initialRole", initialHuman.getRole_id());
+        model.addAttribute("initialHuman", initialHuman);
         return "articles-templates/articles-details";
     }
 
