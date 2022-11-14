@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import java.util.Date;
 
-import static com.site.blog.controllers.MainController.initialRole;
+import static com.site.blog.controllers.MainController.initialHuman;
 
 @Controller
 public class ArticlesController {
@@ -28,13 +28,13 @@ public class ArticlesController {
     public String articlesMain(Model model) {
         Iterable<Articles> articles = articlesRepository.findAll();
         model.addAttribute("articles", articles);
-        model.addAttribute("initialRole", initialRole);
+        model.addAttribute("initialRole", initialHuman.getRole_id());
         return "articles-templates/articles-main";
     }
 
     @GetMapping("/articles/add")
     public String articlesAdd(Model model) {
-        model.addAttribute("initialRole", initialRole);
+        model.addAttribute("initialRole", initialHuman.getRole_id());
         return "articles-templates/articles-add";
     }
 
@@ -59,7 +59,7 @@ public class ArticlesController {
         }
         Articles articles = articlesRepository.findById(id).orElseThrow();
         model.addAttribute("articles", articles);
-        model.addAttribute("initialRole", initialRole);
+        model.addAttribute("initialRole", initialHuman.getRole_id());
         return "articles-templates/articles-details";
     }
 
@@ -79,7 +79,7 @@ public class ArticlesController {
         }
         Articles articles = articlesRepository.findById(id).orElseThrow();
         model.addAttribute("articles", articles);
-        model.addAttribute("initialRole", initialRole);
+        model.addAttribute("initialRole", initialHuman.getRole_id());
         return "articles-templates/articles-edit";
     }
 

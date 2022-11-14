@@ -13,7 +13,7 @@ import javax.persistence.*;
 public class People {
 
     private long id;
-    private String name_people, surname_people;
+    private String username, password, name_people, surname_people;
     private Roles role_id;
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,6 +21,18 @@ public class People {
     @Column(name = "id")
     public long getId() {
         return id;
+    }
+
+    @Basic
+    @Column(name = "username")
+    public String getUsername() {
+        return username;
+    }
+
+    @Basic
+    @Column(name = "password")
+    public String getPassword() {
+        return password;
     }
 
     @Basic
@@ -41,9 +53,15 @@ public class People {
         return role_id;
     }
 
-    public People(String name_people, String surname_people, Roles role_id) {
+    public People(String username, String password, String name_people, String surname_people, Roles role_id) {
+        this.username = username;
+        this.password = password;
         this.name_people = name_people;
         this.surname_people = surname_people;
+        this.role_id = role_id;
+    }
+
+    public People(Roles role_id) {
         this.role_id = role_id;
     }
 }

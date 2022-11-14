@@ -16,17 +16,17 @@ public class MainController {
     @Autowired
     private PeopleRepository peopleRepository;
 
-    public static Roles initialRole = new Roles();
+    public static People initialHuman = new People(new Roles());
 
     @GetMapping("/")
     public String home(Model model) {
-        model.addAttribute("initialRole", initialRole);
+        model.addAttribute("initialRole", initialHuman.getRole_id());
         return "home";
     }
 
     @GetMapping("/about")
     public String about(Model model) {
-        model.addAttribute("initialRole", initialRole);
+        model.addAttribute("initialRole", initialHuman.getRole_id());
         return "aboutUs";
     }
 
@@ -36,13 +36,11 @@ public class MainController {
     }
 
     @PostMapping("/log-in")
-    public String logInPost(@RequestParam String name_people, @RequestParam String surname_people,
-                            @RequestParam String role_id) {
+    public String logInPost(@RequestParam String username, @RequestParam String password) {
         Iterable<People> peopleRepo = peopleRepository.findAll();
         for(People people : peopleRepo){
-            if(name_people.equals(people.getName_people()) && surname_people.equals(people.getSurname_people())
-                    && role_id.equals(people.getRole_id().getName_role())){
-                initialRole = people.getRole_id();
+            if(username.equals(people.getUsername()) && password.equals(people.getPassword())){
+                initialHuman = people;
             }
         }
         return "redirect:/";
@@ -50,7 +48,7 @@ public class MainController {
 
     @PostMapping("/log-out")
     public String postLogOut() {
-        initialRole = new Roles();
+        initialHuman = new People(new Roles());
         return "redirect:/";
     }
 
