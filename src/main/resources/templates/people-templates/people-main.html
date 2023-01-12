@@ -15,7 +15,6 @@
     <div th:each="el : ${people}" class="alert alert-info mt-2">
         <div style="margin: 10px;">
             <h3 th:text="${el.getName_people()} + ' ' +${el.getSurname_people()}"></h3>
-            <p th:text="${el.getRole_id().getName_role()}"></p>
         </div>
         <div style="display: flex;">
             <form th:action="'/people/' + ${el.getId()} + '/edit'" method="get">

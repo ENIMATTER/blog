@@ -11,6 +11,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Setter
 @EqualsAndHashCode
+@Table(name = "articles")
 public class Articles {
 
     private long id;

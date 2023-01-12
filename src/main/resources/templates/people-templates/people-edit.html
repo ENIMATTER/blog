@@ -14,16 +14,16 @@
     <h1>Human editing</h1><br>
     <div>
         <form th:action="'/people/' + ${people.getId()} + '/edit'" method="post">
-            <input type="text" th:value="${people.getUsername()}" name="username"
-                   placeholder="Enter an username" class="form-control"><br>
-            <input type="text" th:value="${people.getPassword()}" name="password"
-                   placeholder="Enter a password" class="form-control"><br>
             <input type="text" th:value="${people.getName_people}" name="name_people"
                    placeholder="Enter a name of the human" class="form-control"><br>
             <input type="text" th:value="${people.getSurname_people}" name="surname_people"
                    placeholder="Enter a surname of the human" class="form-control"><br>
-            <input type="text" th:value="${people.getRole_id().getName_role()}" name="role_id"
-                   placeholder="Enter a name of the role" class="form-control"><br>
+            <input type="text" th:value="${people.getUsers_id().getUsername()}" name="username"
+                   placeholder="Enter a username" class="form-control"><br>
+            <input type="text" th:value="${people.getUsers_id().getPassword()}" name="password"
+                   placeholder="Enter password" class="form-control"><br>
+            <input type="text" th:value="${people.getUsers_id().getEnabled()}" name="enabled"
+                   placeholder="Enter an enabled" class="form-control"><br>
             <button type="submit" class="btn btn-success">Update</button>
         </form>
     </div>

@@ -10,29 +10,18 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Setter
 @EqualsAndHashCode
+@Table(name = "people")
 public class People {
 
     private long id;
-    private String username, password, name_people, surname_people;
-    private Roles role_id;
+    private String name_people, surname_people;
+    private Users users_id;
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id")
     public long getId() {
         return id;
-    }
-
-    @Basic
-    @Column(name = "username")
-    public String getUsername() {
-        return username;
-    }
-
-    @Basic
-    @Column(name = "password")
-    public String getPassword() {
-        return password;
     }
 
     @Basic
@@ -47,21 +36,15 @@ public class People {
         return surname_people;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "role_id", referencedColumnName = "id")
-    public Roles getRole_id() {
-        return role_id;
+    @OneToOne
+    @JoinColumn(name = "users_id", referencedColumnName = "username")
+    public Users getUsers_id() {
+        return users_id;
     }
 
-    public People(String username, String password, String name_people, String surname_people, Roles role_id) {
-        this.username = username;
-        this.password = password;
+    public People(String name_people, String surname_people, Users users_id) {
         this.name_people = name_people;
         this.surname_people = surname_people;
-        this.role_id = role_id;
-    }
-
-    public People(Roles role_id) {
-        this.role_id = role_id;
+        this.users_id = users_id;
     }
 }
