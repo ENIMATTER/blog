@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import java.util.Date;
 
-import static com.site.blog.controllers.MainController.initialHuman;
-
 @Controller
 public class ArticlesController {
 
@@ -28,20 +26,18 @@ public class ArticlesController {
     public String articlesMain(Model model) {
         Iterable<Articles> articles = articlesRepository.findAll();
         model.addAttribute("articles", articles);
-        model.addAttribute("initialRole", initialHuman.getRole_id());
         return "articles-templates/articles-main";
     }
 
     @GetMapping("/articles/add")
-    public String articlesAdd(Model model) {
-        model.addAttribute("initialRole", initialHuman.getRole_id());
+    public String articlesAdd() {
         return "articles-templates/articles-add";
     }
 
     @PostMapping("/articles/add")
     public String articlesPostAdd(@RequestParam String title, @RequestParam String anons,
-                                  @RequestParam String full_text) {
-        Articles articles = new Articles(title, anons, full_text, new Date(), initialHuman);
+                                  @RequestParam String full_text, @RequestParam People people_id) {
+        Articles articles = new Articles(title, anons, full_text, new Date(), people_id);
         articlesRepository.save(articles);
         return "redirect:/articles";
     }
@@ -53,7 +49,6 @@ public class ArticlesController {
         }
         Articles articles = articlesRepository.findById(id).orElseThrow();
         model.addAttribute("articles", articles);
-        model.addAttribute("initialHuman", initialHuman);
         return "articles-templates/articles-details";
     }
 
@@ -73,7 +68,6 @@ public class ArticlesController {
         }
         Articles articles = articlesRepository.findById(id).orElseThrow();
         model.addAttribute("articles", articles);
-        model.addAttribute("initialRole", initialHuman.getRole_id());
         return "articles-templates/articles-edit";
     }
 

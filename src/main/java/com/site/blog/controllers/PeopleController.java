@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import static com.site.blog.controllers.MainController.initialHuman;
-
 @Controller
 public class PeopleController {
     @Autowired
@@ -31,13 +29,11 @@ public class PeopleController {
     public String peopleMain(Model model) {
         Iterable<People> people = peopleRepository.findAll();
         model.addAttribute("people", people);
-        model.addAttribute("initialRole", initialHuman.getRole_id());
         return "people-templates/people-main";
     }
 
     @GetMapping("/people/add")
-    public String peopleAdd(Model model) {
-        model.addAttribute("initialRole", initialHuman.getRole_id());
+    public String peopleAdd() {
         return "people-templates/people-add";
     }
 
@@ -63,7 +59,6 @@ public class PeopleController {
         }
         People people = peopleRepository.findById(id).orElseThrow();
         model.addAttribute("people", people);
-        model.addAttribute("initialRole", initialHuman.getRole_id());
         return "people-templates/people-edit";
     }
 

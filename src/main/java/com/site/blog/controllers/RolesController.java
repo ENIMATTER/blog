@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import static com.site.blog.controllers.MainController.initialHuman;
-
 @Controller
 public class RolesController {
 
@@ -31,14 +29,12 @@ public class RolesController {
     @GetMapping("/roles")
     public String rolesMain(Model model) {
         Iterable<Roles> roles = rolesRepository.findAll();
-        model.addAttribute("initialRole", initialHuman.getRole_id());
         model.addAttribute("roles", roles);
         return "roles-templates/roles-main";
     }
 
     @GetMapping("/roles/add")
-    public String rolesAdd(Model model) {
-        model.addAttribute("initialRole", initialHuman.getRole_id());
+    public String rolesAdd() {
         return "roles-templates/roles-add";
     }
 
@@ -55,7 +51,6 @@ public class RolesController {
             return "redirect:/roles";
         }
         Roles roles = rolesRepository.findById(id).orElseThrow();
-        model.addAttribute("initialRole", initialHuman.getRole_id());
         model.addAttribute("roles", roles);
         return "roles-templates/roles-edit";
     }
