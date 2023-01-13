@@ -36,7 +36,7 @@ public class People {
         return surname_people;
     }
 
-    @OneToOne
+    @OneToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "users_id", referencedColumnName = "username")
     public Users getUsers_id() {
         return users_id;

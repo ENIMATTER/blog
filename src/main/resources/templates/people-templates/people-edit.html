@@ -24,6 +24,15 @@
                    placeholder="Enter password" class="form-control"><br>
             <input type="text" th:value="${people.getUsers_id().getEnabled()}" name="enabled"
                    placeholder="Enter an enabled" class="form-control"><br>
+            <input type="text" th:value="${authoritiesStringList}" name="authority"
+                   placeholder="Enter an authority" class="form-control"><br>
+<!--            <select name="authority" required="required" multiple="multiple">-->
+<!--                <option disabled>Select a role(s)</option>-->
+<!--                <option value="ROLE_WRITER">Writer</option>-->
+<!--                <option value="ROLE_READER">Reader</option>-->
+<!--                <option value="ROLE_ADMIN">Admin</option>-->
+<!--            </select><br><br>-->
+
             <button type="submit" class="btn btn-success">Update</button>
         </form>
     </div>

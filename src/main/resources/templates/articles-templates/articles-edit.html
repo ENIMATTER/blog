@@ -8,9 +8,9 @@
 
 <body sec:authorize="hasRole('WRITER') || hasRole('ADMIN')">
 
-<header sec:authorize="hasRole('WRITER')" th:insert="blocks/header-writer :: header-writer"></header>
-
 <header sec:authorize="hasRole('ADMIN')" th:insert="blocks/header-admin :: header-admin"></header>
+
+<header sec:authorize="hasRole('WRITER') && !hasRole('ADMIN')" th:insert="blocks/header-writer :: header-writer"></header>
 
 <div class="container mt-5 mb-5">
     <h1>Article editing</h1><br>

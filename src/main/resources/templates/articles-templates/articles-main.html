@@ -8,11 +8,12 @@
 
 <body sec:authorize="isAuthenticated()">
 
-<header sec:authorize="hasRole('WRITER')" th:insert="blocks/header-writer :: header-writer"></header>
-
 <header sec:authorize="hasRole('ADMIN')" th:insert="blocks/header-admin :: header-admin"></header>
 
-<header sec:authorize="hasRole('READER')" th:insert="blocks/header-reader :: header-reader"></header>
+<header sec:authorize="hasRole('WRITER') && !hasRole('ADMIN')" th:insert="blocks/header-writer :: header-writer"></header>
+
+<header sec:authorize="hasRole('READER') && !hasRole('ADMIN') && !hasRole('WRITER')" th:insert="blocks/header-reader :: header-reader"></header>
+
 <div class="container mt-5">
     <h1>Articles</h1>
     <div th:each="el : ${articles}" class="alert alert-info mt-2">

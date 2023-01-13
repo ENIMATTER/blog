@@ -57,7 +57,7 @@ public class Articles {
         return date_publication;
     }
 
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "people_id", referencedColumnName = "id")
     public People getPeople_id() {
         return people_id;
