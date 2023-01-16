@@ -1,9 +1,6 @@
 package com.site.blog.models;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -12,10 +9,10 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Setter
 @EqualsAndHashCode
+@ToString
 @Table(name = "users")
 public class Users {
-    private String username;
-    private String password;
+    private String username, password, name, surname, email;
     private int enabled;
 
     @Id
@@ -34,5 +31,23 @@ public class Users {
     @Column(name = "enabled")
     public int getEnabled() {
         return enabled;
+    }
+
+    @Basic
+    @Column(name = "name")
+    public String getName() {
+        return name;
+    }
+
+    @Basic
+    @Column(name = "surname")
+    public String getSurname() {
+        return surname;
+    }
+
+    @Basic
+    @Column(name = "email")
+    public String getEmail() {
+        return email;
     }
 }

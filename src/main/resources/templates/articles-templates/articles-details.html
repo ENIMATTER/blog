@@ -20,7 +20,7 @@
             <h1 th:text="${articles.getTitle()}"></h1>
             <h4 th:text="${articles.getAnons()}"></h4>
             <p th:text="${articles.getFull_text()}"></p>
-            <p th:text="${articles.getPeople_id().getName_people()} + ' ' + ${articles.getPeople_id().getSurname_people()}"></p>
+            <p th:text="${articles.getUsers_id().getName()} + ' ' + ${articles.getUsers_id().getSurname()}"></p>
             <b><p th:text="'Views: ' + ${articles.getViews()}"></p></b>
             <b><p th:text="'Added: ' + ${articles.getDate_publication()}"></p></b>
         </div>

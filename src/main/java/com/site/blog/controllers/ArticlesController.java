@@ -1,16 +1,12 @@
 package com.site.blog.controllers;
 
-import com.site.blog.models.People;
 import com.site.blog.models.Articles;
-import com.site.blog.repo.PeopleRepository;
 import com.site.blog.repo.ArticlesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+
 import java.util.Date;
 
 @Controller
@@ -18,9 +14,6 @@ public class ArticlesController {
 
     @Autowired
     private ArticlesRepository articlesRepository;
-
-    @Autowired
-    private PeopleRepository peopleRepository;
 
     @GetMapping("/articles")
     public String articlesMain(Model model) {
@@ -30,15 +23,16 @@ public class ArticlesController {
     }
 
     @GetMapping("/articles/add")
-    public String articlesAdd() {
+    public String articlesAdd(Model model) {
+        Articles article = new Articles();
+        model.addAttribute("article", article);
         return "articles-templates/articles-add";
     }
 
     @PostMapping("/articles/add")
-    public String articlesPostAdd(@RequestParam String title, @RequestParam String anons,
-                                  @RequestParam String full_text, @RequestParam People people_id) {
-        Articles articles = new Articles(title, anons, full_text, new Date(), people_id);
-        articlesRepository.save(articles);
+    public String articlesPostAdd(@ModelAttribute("article") Articles article) {
+        article.setDate_publication(new Date());
+        articlesRepository.save(article);
         return "redirect:/articles";
     }
 
@@ -66,33 +60,26 @@ public class ArticlesController {
         if (!articlesRepository.existsById(id)) {
             return "redirect:/articles";
         }
-        Articles articles = articlesRepository.findById(id).orElseThrow();
-        model.addAttribute("articles", articles);
+        Articles article = articlesRepository.findById(id).orElseThrow();
+        model.addAttribute("article", article);
         return "articles-templates/articles-edit";
     }
 
     @PostMapping("/articles/{id}/edit")
-    public String articlesPostEdit(@PathVariable(value = "id") long id, @RequestParam String title,
-                                   @RequestParam String anons, @RequestParam String full_text,
-                                   @RequestParam String nameAuthor, @RequestParam String surnameAuthor) {
-        Articles articles = articlesRepository.findById(id).orElseThrow();
-        Iterable<People> peopleRepo = peopleRepository.findAll();
-        for(People human : peopleRepo){
-            if(human.getName_people().equals(nameAuthor) && human.getSurname_people().equals(surnameAuthor)){
-                articles.setTitle(title);
-                articles.setAnons(anons);
-                articles.setFull_text(full_text);
-                articles.setPeople_id(human);
-                articlesRepository.save(articles);
-            }
-        }
+    public String articlesPostEdit(@PathVariable(value = "id") long id,
+                                   @ModelAttribute("article") Articles article) {
+        Articles editedArticle = articlesRepository.findById(id).orElseThrow();
+        editedArticle.setTitle(article.getTitle());
+        editedArticle.setAnons(article.getAnons());
+        editedArticle.setFull_text(article.getFull_text());
+        editedArticle.setUsers_id(article.getUsers_id());
+        articlesRepository.save(editedArticle);
         return "redirect:/articles";
     }
 
     @PostMapping("/articles/{id}/remove")
     public String articlesPostDelete(@PathVariable(value = "id") long id) {
-        Articles articles = articlesRepository.findById(id).orElseThrow();
-        articlesRepository.delete(articles);
+        articlesRepository.deleteById(id);
         return "redirect:/articles";
     }
 }

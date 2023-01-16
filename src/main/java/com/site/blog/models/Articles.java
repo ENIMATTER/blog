@@ -3,6 +3,7 @@ package com.site.blog.models;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -11,6 +12,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Setter
 @EqualsAndHashCode
+@ToString
 @Table(name = "articles")
 public class Articles {
 
@@ -18,7 +20,7 @@ public class Articles {
     private String title, anons, full_text;
     private int views;
     private Date date_publication;
-    private People people_id;
+    private Users users_id;
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
@@ -57,17 +59,16 @@ public class Articles {
         return date_publication;
     }
 
-    @ManyToOne(cascade=CascadeType.ALL)
-    @JoinColumn(name = "people_id", referencedColumnName = "id")
-    public People getPeople_id() {
-        return people_id;
+    @ManyToOne(cascade= {CascadeType.DETACH, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+    @JoinColumn(name = "users_id", referencedColumnName = "username")
+    public Users getUsers_id() {
+        return users_id;
     }
 
-    public Articles(String title, String anons, String full_text, Date date_publication, People people_id) {
+    public Articles(String title, String anons, String full_text, Users users_id) {
         this.title = title;
         this.anons = anons;
         this.full_text = full_text;
-        this.date_publication = date_publication;
-        this.people_id = people_id;
+        this.users_id = users_id;
     }
 }

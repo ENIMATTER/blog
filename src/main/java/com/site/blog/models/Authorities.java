@@ -3,6 +3,7 @@ package com.site.blog.models;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 
@@ -10,6 +11,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Setter
 @EqualsAndHashCode
+@ToString
 @Table(name = "authorities")
 public class Authorities {
     private long id;
@@ -23,7 +25,7 @@ public class Authorities {
         return id;
     }
 
-    @ManyToOne(cascade={CascadeType.REMOVE, CascadeType.DETACH})
+    @ManyToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "username", referencedColumnName = "username")
     public Users getUsername() {
         return username;
