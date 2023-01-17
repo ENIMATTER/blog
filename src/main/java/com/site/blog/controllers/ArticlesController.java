@@ -1,7 +1,9 @@
 package com.site.blog.controllers;
 
 import com.site.blog.models.Articles;
+import com.site.blog.models.Users;
 import com.site.blog.repo.ArticlesRepository;
+import com.site.blog.repo.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -9,11 +11,16 @@ import org.springframework.ui.Model;
 
 import java.util.Date;
 
+import static com.site.blog.StaticMethods.getCurrentUsername;
+
 @Controller
 public class ArticlesController {
 
     @Autowired
     private ArticlesRepository articlesRepository;
+
+    @Autowired
+    private UsersRepository usersRepository;
 
     @GetMapping("/articles")
     public String articlesMain(Model model) {
@@ -31,6 +38,8 @@ public class ArticlesController {
 
     @PostMapping("/articles/add")
     public String articlesPostAdd(@ModelAttribute("article") Articles article) {
+        Users user = usersRepository.findById(getCurrentUsername()).orElseThrow();
+        article.setUsers_id(user);
         article.setDate_publication(new Date());
         articlesRepository.save(article);
         return "redirect:/articles";
@@ -43,6 +52,8 @@ public class ArticlesController {
         }
         Articles articles = articlesRepository.findById(id).orElseThrow();
         model.addAttribute("articles", articles);
+        Users user = usersRepository.findById(getCurrentUsername()).orElseThrow();
+        model.addAttribute("user", user);
         return "articles-templates/articles-details";
     }
 
@@ -72,7 +83,6 @@ public class ArticlesController {
         editedArticle.setTitle(article.getTitle());
         editedArticle.setAnons(article.getAnons());
         editedArticle.setFull_text(article.getFull_text());
-        editedArticle.setUsers_id(article.getUsers_id());
         articlesRepository.save(editedArticle);
         return "redirect:/articles";
     }

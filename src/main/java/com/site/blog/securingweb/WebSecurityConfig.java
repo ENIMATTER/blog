@@ -29,10 +29,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .antMatchers("/users").hasRole("ADMIN")
                 .antMatchers("/users/add").hasRole("ADMIN")
-                .antMatchers("/users/{id}/edit").hasRole("ADMIN")
+                .antMatchers("/users/{id}/edit").hasAnyRole("WRITER", "ADMIN", "READER")
                 .antMatchers("/users/{id}/edit/authority").hasRole("ADMIN")
-                .antMatchers("/users/{id}/edit/password").hasRole("ADMIN")
-                .antMatchers("/users/{id}/edit/username").hasRole("ADMIN")
+                .antMatchers("/users/{id}/edit/password").hasAnyRole("WRITER", "ADMIN", "READER")
+                .antMatchers("/users/{id}/edit/username").hasAnyRole("WRITER", "ADMIN", "READER")
                 .antMatchers("/users/{id}/remove").hasRole("ADMIN")
 
                 .and().formLogin().permitAll();

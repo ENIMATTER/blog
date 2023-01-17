@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.site.blog.StaticMethods.getCurrentUsername;
+
 @Controller
 public class UsersController {
     @Autowired
@@ -40,7 +42,7 @@ public class UsersController {
         Iterable<Users> usersIterable = usersRepository.findAll();
         for (Users users : usersIterable) {
             if(users.getUsername().equals(user.getUsername())){
-                return "redirect:/registration";
+                return "redirect:/";
             }
         }
         String codedPassword = "{bcrypt}" + new BCryptPasswordEncoder().encode(user.getPassword());
@@ -57,10 +59,12 @@ public class UsersController {
     @GetMapping("/users/{id}/edit")
     public String usersEdit(@PathVariable(value = "id") String id, Model model) {
         if (!usersRepository.existsById(id)) {
-            return "redirect:/users";
+            return "redirect:/";
         }
         Users user = usersRepository.findById(id).orElseThrow();
         model.addAttribute("user", user);
+        Users currentUser = usersRepository.findById(getCurrentUsername()).orElseThrow();
+        model.addAttribute("currentUser", currentUser);
         return "users-templates/users-edit";
     }
 
@@ -72,13 +76,13 @@ public class UsersController {
         editedUser.setSurname(user.getSurname());
         editedUser.setEmail(user.getEmail());
         usersRepository.save(editedUser);
-        return "redirect:/users";
+        return "redirect:/profile";
     }
 
     @GetMapping("/users/{id}/edit/authority")
     public String usersEditAuthority(@PathVariable(value = "id") String id, Model model) {
         if (!usersRepository.existsById(id)) {
-            return "redirect:/users";
+            return "redirect:/";
         }
         Users user = usersRepository.findById(id).orElseThrow();
         model.addAttribute("user", user);
@@ -103,10 +107,12 @@ public class UsersController {
     @GetMapping("/users/{id}/edit/password")
     public String usersEditPassword(@PathVariable(value = "id") String id, Model model) {
         if (!usersRepository.existsById(id)) {
-            return "redirect:/users";
+            return "redirect:/";
         }
         Users user = usersRepository.findById(id).orElseThrow();
         model.addAttribute("user", user);
+        Users currentUser = usersRepository.findById(getCurrentUsername()).orElseThrow();
+        model.addAttribute("currentUser", currentUser);
         return "users-templates/users-edit-password";
     }
 
@@ -122,10 +128,12 @@ public class UsersController {
     @GetMapping("/users/{id}/edit/username")
     public String usersEditUsername(@PathVariable(value = "id") String id, Model model) {
         if (!usersRepository.existsById(id)) {
-            return "redirect:/users";
+            return "redirect:/";
         }
         Users user = usersRepository.findById(id).orElseThrow();
         model.addAttribute("user", user);
+        Users currentUser = usersRepository.findById(getCurrentUsername()).orElseThrow();
+        model.addAttribute("currentUser", currentUser);
         return "users-templates/users-edit-username";
     }
 
@@ -133,12 +141,12 @@ public class UsersController {
     public String usersPostEditUsername(@PathVariable(value = "id") String id, @RequestParam String username) {
         Users user = usersRepository.findById(id).orElseThrow();
         usersRepository.changeUsername(user.getUsername(), username);
-        return "redirect:/users";
+        return "redirect:/login?logout";
     }
 
     @PostMapping("/users/{id}/remove")
     public String usersPostDelete(@PathVariable(value = "id") String id) {
         usersRepository.deleteById(id);
-        return "redirect:/users";
+        return "redirect:/";
     }
 }

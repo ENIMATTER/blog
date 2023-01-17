@@ -10,9 +10,11 @@
 
 <header sec:authorize="hasRole('ADMIN')" th:insert="blocks/header-admin :: header-admin"></header>
 
-<header sec:authorize="hasRole('WRITER') && !hasRole('ADMIN')" th:insert="blocks/header-writer :: header-writer"></header>
+<header sec:authorize="hasRole('WRITER') && !hasRole('ADMIN')"
+        th:insert="blocks/header-writer :: header-writer"></header>
 
-<header sec:authorize="hasRole('READER') && !hasRole('ADMIN') && !hasRole('WRITER')" th:insert="blocks/header-reader :: header-reader"></header>
+<header sec:authorize="hasRole('READER') && !hasRole('ADMIN') && !hasRole('WRITER')"
+        th:insert="blocks/header-reader :: header-reader"></header>
 
 <div class="container mt-5">
     <div class="alert alert-info mt-2">
@@ -25,21 +27,19 @@
             <b><p th:text="'Added: ' + ${articles.getDate_publication()}"></p></b>
         </div>
 
-        <form th:action="'/articles/' + ${articles.getId()} + '/remove'" method="post">
+        <form th:action="'/articles/' + ${articles.getId()} + '/remove'" method="post" style="display: flex;">
             <a th:href="'/articles'" class="btn btn-warning" type="submit" style="margin: 10px;">
                 Back to articles
             </a>
 
-            <a sec:authorize="hasRole('WRITER') || hasRole('ADMIN')"
-               th:href="'/articles/'+ ${articles.getId()} + '/edit'"
-               class="btn btn-warning" type="submit"
-               style="margin: 10px;">Edit
-            </a>
+            <div th:if="${articles.getUsers_id().getUsername()} == ${user.getUsername()}">
+                <a th:href="'/articles/'+ ${articles.getId()} + '/edit'"
+                   class="btn btn-warning" type="submit"
+                   style="margin: 10px;">Edit
+                </a>
 
-            <button sec:authorize="hasRole('WRITER') || hasRole('ADMIN')"
-                    class="btn btn-warning" type="submit"
-                    style="margin: 10px;">Delete
-            </button>
+                <button class="btn btn-warning" type="submit" style="margin: 10px;">Delete</button>
+            </div>
         </form>
     </div>
 </div>

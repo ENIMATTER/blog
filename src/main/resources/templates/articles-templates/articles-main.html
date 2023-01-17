@@ -20,8 +20,9 @@
         <div style="margin: 10px;">
             <h3 th:text="${el.getTitle()}"></h3>
             <p th:text="${el.getAnons()}"></p>
-            <b><p th:text="${el.getUsers_id().getName()} + ' ' + ${el.getUsers_id().getSurname()}"></p>
-            </b>
+            <b><p th:text="'Author: ' + ${el.getUsers_id().getName()} + ' ' + ${el.getUsers_id().getSurname()}"></p></b>
+            <p th:text="'Views: ' + ${el.getViews()}"></p>
+            <p th:text="'Added: ' + ${el.getDate_publication()}"></p>
             <form th:action="'/articles/' + ${el.getId()}" method="post">
                 <button class="btn btn-warning" type="submit">More</button>
             </form>
