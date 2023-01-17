@@ -10,14 +10,11 @@
 
 <header th:insert="blocks/header-admin :: header-admin"></header>
 
-<div class="container mt-5 mb-5">
+<div class="container mt-2 mb-2">
     <h1>User editing</h1><br>
     <div>
         <form th:action="'/users/' + ${user.getUsername()} + '/edit'" th:object="${user}" method="post">
-            <input type="text" th:value="${user.getUsername()}" name="username" th:field="*{username}"
-                   placeholder="Enter a username" class="form-control"><br>
-            <input type="text" th:value="${user.getPassword()}" name="password" th:field="*{password}"
-                   placeholder="Enter password" class="form-control"><br>
+            <h4 th:text="'Username: ' + ${user.getUsername()}"></h4>
             <input type="text" th:value="${user.getEnabled()}" name="enabled" th:field="*{enabled}"
                    placeholder="Enter an enabled" class="form-control"><br>
             <input type="text" th:value="${user.getName()}" name="name" th:field="*{name}"
@@ -26,17 +23,19 @@
                    placeholder="Enter a surname of the human" class="form-control"><br>
             <input type="text" th:value="${user.getEmail()}" name="email" th:field="*{email}"
                    placeholder="Enter a surname of the human" class="form-control"><br>
-            <input type="text" th:value="${authorities}" name="authority"
-                   placeholder="Enter an authority" class="form-control"><br>
-
-<!--            <select name="authority" required="required" multiple="multiple">-->
-<!--                <option disabled>Select a role(s)</option>-->
-<!--                <option value="ROLE_WRITER">Writer</option>-->
-<!--                <option value="ROLE_READER">Reader</option>-->
-<!--                <option value="ROLE_ADMIN">Admin</option>-->
-<!--            </select><br><br>-->
-
             <button type="submit" class="btn btn-success">Update</button>
+        </form>
+
+        <form th:action="'/users/' + ${user.getUsername()} + '/edit/username'" method="get">
+            <button class="btn btn-success" type="submit" style="margin-top: 10px">Edit username</button>
+        </form>
+
+        <form th:action="'/users/' + ${user.getUsername()} + '/edit/password'" method="get">
+            <button class="btn btn-success" type="submit" style="margin-top: 10px">Edit password</button>
+        </form>
+
+        <form th:action="'/users/' + ${user.getUsername()} + '/edit/authority'" method="get">
+            <button class="btn btn-success" type="submit" style="margin-top: 10px">Edit authorities</button>
         </form>
     </div>
 </div>

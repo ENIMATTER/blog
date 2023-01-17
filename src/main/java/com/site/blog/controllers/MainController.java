@@ -5,6 +5,7 @@ import com.site.blog.models.Users;
 import com.site.blog.repo.AuthoritiesRepository;
 import com.site.blog.repo.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -49,7 +50,7 @@ public class MainController {
                 return "redirect:/registration";
             }
         }
-        String codedPassword = "{noop}" + user.getPassword();
+        String codedPassword = "{bcrypt}" + new BCryptPasswordEncoder().encode(user.getPassword());
         user.setPassword(codedPassword);
         user.setEnabled(1);
         List<Authorities> authoritiesList = new ArrayList<>();

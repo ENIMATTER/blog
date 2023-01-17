@@ -27,15 +27,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/articles/{id}/edit").hasAnyRole("WRITER", "ADMIN")
                 .antMatchers("/articles/{id}/remove").hasAnyRole("WRITER", "ADMIN")
 
-                .antMatchers("/people").hasRole("ADMIN")
-                .antMatchers("/people/add").hasRole("ADMIN")
-                .antMatchers("/people/{id}/edit").hasRole("ADMIN")
-                .antMatchers("/people/{id}/remove").hasRole("ADMIN")
-
-                .antMatchers("/roles").hasRole("ADMIN")
-                .antMatchers("/roles/add").hasRole("ADMIN")
-                .antMatchers("/roles/{id}/edit").hasRole("ADMIN")
-                .antMatchers("/roles/{id}/remove").hasRole("ADMIN")
+                .antMatchers("/users").hasRole("ADMIN")
+                .antMatchers("/users/add").hasRole("ADMIN")
+                .antMatchers("/users/{id}/edit").hasRole("ADMIN")
+                .antMatchers("/users/{id}/edit/authority").hasRole("ADMIN")
+                .antMatchers("/users/{id}/edit/password").hasRole("ADMIN")
+                .antMatchers("/users/{id}/edit/username").hasRole("ADMIN")
+                .antMatchers("/users/{id}/remove").hasRole("ADMIN")
 
                 .and().formLogin().permitAll();
     }

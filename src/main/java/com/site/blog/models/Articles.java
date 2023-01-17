@@ -1,6 +1,5 @@
 package com.site.blog.models;
 
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
@@ -11,7 +10,6 @@ import java.util.Date;
 @Entity
 @NoArgsConstructor
 @Setter
-@EqualsAndHashCode
 @ToString
 @Table(name = "articles")
 public class Articles {
