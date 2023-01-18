@@ -16,8 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.site.blog.StaticMethods.getCurrentUsername;
-
 @Controller
 public class MainController {
 
@@ -60,13 +58,6 @@ public class MainController {
             authoritiesList.add(new Authorities(user, role));
         }
         authoritiesRepository.saveAll(authoritiesList);
-        return "redirect:/";
-    }
-
-    @GetMapping("/profile")
-    public String profile(Model model){
-        Users user = usersRepository.findById(getCurrentUsername()).orElseThrow();
-        model.addAttribute("user", user);
-        return "profile";
+        return "redirect:/login";
     }
 }

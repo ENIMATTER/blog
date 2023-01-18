@@ -40,6 +40,15 @@
 
                 <button class="btn btn-warning" type="submit" style="margin: 10px;">Delete</button>
             </div>
+
+            <div th:unless="${articles.getUsers_id().getUsername()} == ${user.getUsername()}" sec:authorize="hasRole('ADMIN')">
+                <a th:href="'/articles/'+ ${articles.getId()} + '/edit'"
+                   class="btn btn-warning" type="submit"
+                   style="margin: 10px;">Edit
+                </a>
+
+                <button class="btn btn-warning" type="submit" style="margin: 10px;">Delete</button>
+            </div>
         </form>
     </div>
 </div>

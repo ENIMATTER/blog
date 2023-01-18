@@ -24,30 +24,18 @@
     <h1>Log on</h1><br>
 
     <form th:action="'/registration'" th:object="${user}" method="post">
-        <label>
-            <input type="text" name="username" th:field="*{username}" placeholder="Enter an username"
-                   class="form-control">
-        </label><br>
-        <label>
-            <input type="text" name="password" th:field="*{password}" placeholder="Enter a password"
-                   class="form-control">
-        </label><br>
-        <label>
-            <input type="text" name="name" th:field="*{name}" placeholder="Enter a name" class="form-control">
-        </label><br>
-        <label>
-            <input type="text" name="surname" th:field="*{surname}" placeholder="Enter a surname" class="form-control">
-        </label><br>
-        <label>
-            <input type="text" name="email" th:field="*{email}" placeholder="Enter an email" class="form-control">
-        </label><br>
-        <label>
-            <select name="authority" required="required" multiple="multiple">
-                <option disabled>Select a role(s)</option>
-                <option value="ROLE_WRITER">Writer</option>
-                <option selected value="ROLE_READER">Reader</option>
-            </select>
-        </label><br><br>
+        <input type="text" name="username" th:field="*{username}" placeholder="Enter an username"
+               class="form-control"><br>
+        <input type="text" name="password" th:field="*{password}" placeholder="Enter a password"
+               class="form-control"><br>
+        <input type="text" name="name" th:field="*{name}" placeholder="Enter a name" class="form-control"><br>
+        <input type="text" name="surname" th:field="*{surname}" placeholder="Enter a surname" class="form-control"><br>
+        <input type="text" name="email" th:field="*{email}" placeholder="Enter an email" class="form-control"><br>
+        <select name="authority" required="required" multiple="multiple">
+            <option disabled>Select a role(s)</option>
+            <option value="ROLE_WRITER">Writer</option>
+            <option value="ROLE_READER">Reader</option>
+        </select><br><br>
         <button type="submit" class="btn btn-success">Add a human</button>
     </form>
 </div>
