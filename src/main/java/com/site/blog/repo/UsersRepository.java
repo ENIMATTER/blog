@@ -1,6 +1,6 @@
 package com.site.blog.repo;
 
-import com.site.blog.models.Users;
+import com.site.blog.entity.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

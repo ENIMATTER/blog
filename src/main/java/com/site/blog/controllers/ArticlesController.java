@@ -1,16 +1,18 @@
 package com.site.blog.controllers;
 
-import com.site.blog.models.Articles;
-import com.site.blog.models.Authorities;
-import com.site.blog.models.Users;
+import com.site.blog.entity.Articles;
+import com.site.blog.entity.Authorities;
+import com.site.blog.entity.Users;
 import com.site.blog.repo.ArticlesRepository;
 import com.site.blog.repo.AuthoritiesRepository;
 import com.site.blog.repo.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
 
+import javax.validation.Valid;
 import java.util.Date;
 import java.util.List;
 
@@ -43,7 +45,11 @@ public class ArticlesController {
     }
 
     @PostMapping("/articles/add")
-    public String articlesPostAdd(@ModelAttribute("article") Articles article) {
+    public String articlesPostAdd(@Valid @ModelAttribute("article") Articles article,
+                                  BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "articles-templates/articles-add";
+        }
         Users user = usersRepository.findById(getCurrentUsername()).orElseThrow();
         article.setUsers_id(user);
         article.setDate_publication(new Date());
@@ -66,7 +72,7 @@ public class ArticlesController {
     @PostMapping("/articles/{id}")
     public String articlesPostDetails(@PathVariable(value = "id") long id) {
         Articles articles = articlesRepository.findById(id).orElseThrow();
-        int views = articles.getViews();
+        long views = articles.getViews();
         articles.setViews(views + 1);
         articlesRepository.save(articles);
         return "redirect:/articles/{id}";
@@ -96,7 +102,11 @@ public class ArticlesController {
 
     @PostMapping("/articles/{id}/edit")
     public String articlesPostEdit(@PathVariable(value = "id") long id,
-                                   @ModelAttribute("article") Articles article) {
+                                   @Valid @ModelAttribute("article") Articles article,
+                                   BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "articles-templates/articles-edit";
+        }
         Articles editedArticle = articlesRepository.findById(id).orElseThrow();
         editedArticle.setTitle(article.getTitle());
         editedArticle.setAnons(article.getAnons());

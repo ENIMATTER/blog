@@ -10,15 +10,24 @@
 
 <header sec:authorize="hasRole('ADMIN')" th:insert="blocks/header-admin :: header-admin"></header>
 
-<header sec:authorize="hasRole('WRITER') && !hasRole('ADMIN')" th:insert="blocks/header-writer :: header-writer"></header>
+<header sec:authorize="hasRole('WRITER') && !hasRole('ADMIN')"
+        th:insert="blocks/header-writer :: header-writer"></header>
 
 <div class="container mt-5 mb-5">
     <h1>Adding an article</h1><br>
     <form th:action="'/articles/add'" th:object="${article}" method="post">
-        <input type="text" name="title" th:field="*{title}" placeholder="Enter a title of the article" class="form-control"><br>
-        <input type="text" name="anons" th:field="*{anons}" placeholder="Enter an announcement of the article" class="form-control"><br>
-        <textarea name="full_text" th:field="*{full_text}" placeholder="Enter a full text of the article" class="form-control"></textarea><br>
-<!--        <input type="text" name="users_id" th:field="*{users_id}" placeholder="Enter an author username of the article" class="form-control"><br>-->
+        <input type="text" name="title" th:field="*{title}" placeholder="Enter a title"
+               class="form-control">
+        <small th:if="${#fields.hasErrors('title')}" th:errors="*{title}" style="color: red"></small><br>
+
+        <input type="text" name="anons" th:field="*{anons}" placeholder="Enter an announcement"
+               class="form-control">
+        <small th:if="${#fields.hasErrors('anons')}" th:errors="*{anons}" style="color: red"></small><br>
+
+        <textarea name="full_text" th:field="*{full_text}" placeholder="Enter a full text"
+                  class="form-control"></textarea>
+        <small th:if="${#fields.hasErrors('full_text')}" th:errors="*{full_text}" style="color: red"></small><br>
+
         <button type="submit" class="btn btn-success">Add article</button>
     </form>
 </div>

@@ -1,7 +1,7 @@
 package com.site.blog.repo;
 
-import com.site.blog.models.Authorities;
-import com.site.blog.models.Users;
+import com.site.blog.entity.Authorities;
+import com.site.blog.entity.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;

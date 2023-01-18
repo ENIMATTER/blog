@@ -17,11 +17,17 @@
     <div>
         <form th:action="'/articles/' + ${article.getId()} + '/edit'" th:object="${article}" method="post">
             <input type="text" th:value="${article.getTitle()}" name="title" th:field="*{title}"
-                   placeholder="Enter a title of the article" class="form-control"><br>
+                   placeholder="Enter a title of the article" class="form-control">
+            <small th:if="${#fields.hasErrors('title')}" th:errors="*{title}" style="color: red"></small><br>
+
             <input type="text" th:value="${article.getAnons()}" name="anons" th:field="*{anons}"
-                   placeholder="Enter a announcement of the article" class="form-control"><br>
+                   placeholder="Enter a announcement of the article" class="form-control">
+            <small th:if="${#fields.hasErrors('anons')}" th:errors="*{anons}" style="color: red"></small><br>
+
             <textarea name="full_text" placeholder="Enter a full text of the article" class="form-control"
-                      th:text="${article.getFull_text()}" th:field="*{full_text}"></textarea><br>
+                      th:text="${article.getFull_text()}" th:field="*{full_text}"></textarea>
+            <small th:if="${#fields.hasErrors('full_text')}" th:errors="*{full_text}" style="color: red"></small><br>
+
             <button type="submit" class="btn btn-success">Update</button>
         </form>
     </div>

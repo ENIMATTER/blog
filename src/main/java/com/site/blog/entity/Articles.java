@@ -1,67 +1,55 @@
-package com.site.blog.models;
+package com.site.blog.entity;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.Date;
 
 @Entity
 @NoArgsConstructor
 @Setter
+@Getter
 @ToString
 @Table(name = "articles")
 public class Articles {
 
-    private long id;
-    private String title, anons, full_text;
-    private int views;
-    private Date date_publication;
-    private Users users_id;
-
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id")
-    public long getId() {
-        return id;
-    }
+    private long id;
 
+    @Size(max = 100, message = "Title size must be less than 100")
+    @NotBlank(message = "Title is mandatory")
     @Basic
     @Column(name = "title")
-    public String getTitle() {
-        return title;
-    }
+    private String title;
 
+    @Size(max = 250, message = "Anons size must be less than 250")
     @Basic
     @Column(name = "anons")
-    public String getAnons() {
-        return anons;
-    }
+    private String anons;
 
+    @Size(max = 2000, message = "Full text size must be less than 2000")
     @Basic
     @Column(name = "full_text")
-    public String getFull_text() {
-        return full_text;
-    }
+    private String full_text;
 
     @Basic
     @Column(name = "views")
-    public int getViews() {
-        return views;
-    }
+    private long views;
 
     @Basic
     @Column(name = "date_publication")
-    public Date getDate_publication() {
-        return date_publication;
-    }
+    private Date date_publication;
 
     @ManyToOne(cascade= {CascadeType.DETACH, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "users_id", referencedColumnName = "username")
-    public Users getUsers_id() {
-        return users_id;
-    }
+    private Users users_id;
 
     public Articles(String title, String anons, String full_text, Users users_id) {
         this.title = title;

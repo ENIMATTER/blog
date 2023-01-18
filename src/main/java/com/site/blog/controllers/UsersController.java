@@ -1,15 +1,17 @@
 package com.site.blog.controllers;
 
-import com.site.blog.models.Authorities;
-import com.site.blog.models.Users;
+import com.site.blog.entity.Authorities;
+import com.site.blog.entity.Users;
 import com.site.blog.repo.AuthoritiesRepository;
 import com.site.blog.repo.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,11 +38,15 @@ public class UsersController {
     }
 
     @PostMapping("/users/add")
-    public String usersPostAdd(@ModelAttribute("user") Users user, @RequestParam String[] authority) {
+    public String usersPostAdd(@Valid @ModelAttribute("user") Users user, BindingResult bindingResult,
+                               @RequestParam String[] authority) {
+        if (bindingResult.hasErrors()) {
+            return "users-templates/users-add";
+        }
         Iterable<Users> usersIterable = usersRepository.findAll();
         for (Users users : usersIterable) {
             if(users.getUsername().equals(user.getUsername())){
-                return "redirect:/";
+                return "redirect:/users";
             }
         }
         String codedPassword = "{bcrypt}" + new BCryptPasswordEncoder().encode(user.getPassword());
@@ -64,8 +70,13 @@ public class UsersController {
         return "users-templates/users-edit";
     }
 
+    // TODO: fix bug editing with bindingResult
     @PostMapping("/users/{id}/edit")
-    public String usersPostEdit(@PathVariable(value = "id") String id, @ModelAttribute("user") Users user) {
+    public String usersPostEdit(@PathVariable(value = "id") String id, @Valid @ModelAttribute("user") Users user,
+                                BindingResult bindingResult) {
+//        if (bindingResult.hasErrors()) {
+//            return "users-templates/users-edit";
+//        }
         Users editedUser = usersRepository.findById(id).orElseThrow();
         editedUser.setEnabled(user.getEnabled());
         editedUser.setName(user.getName());
@@ -110,6 +121,7 @@ public class UsersController {
         return "users-templates/users-edit-password";
     }
 
+    //TODO: do validation for password
     @PostMapping("/users/{id}/edit/password")
     public String usersPostEditPassword(@PathVariable(value = "id") String id, @RequestParam String password) {
         Users user = usersRepository.findById(id).orElseThrow();
@@ -129,11 +141,12 @@ public class UsersController {
         return "users-templates/users-edit-username";
     }
 
+    //TODO: do validation for username
     @PostMapping("/users/{id}/edit/username")
     public String usersPostEditUsername(@PathVariable(value = "id") String id, @RequestParam String username) {
         Users user = usersRepository.findById(id).orElseThrow();
         usersRepository.changeUsername(user.getUsername(), username);
-        return "redirect:/login?logout";
+        return "redirect:/users";
     }
 
     @PostMapping("/users/{id}/remove")
