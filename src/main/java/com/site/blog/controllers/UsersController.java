@@ -60,24 +60,24 @@ public class UsersController {
         return "redirect:/users";
     }
 
-    @GetMapping("/users/{id}/edit")
-    public String usersEdit(@PathVariable(value = "id") String id, Model model) {
-        if (!usersRepository.existsById(id)) {
+    @GetMapping("/users/{username}/edit")
+    public String usersEdit(@PathVariable(value = "username") String username, Model model) {
+        if (!usersRepository.existsById(username)) {
             return "redirect:/users";
         }
-        Users user = usersRepository.findById(id).orElseThrow();
+        Users user = usersRepository.findById(username).orElseThrow();
         model.addAttribute("user", user);
         return "users-templates/users-edit";
     }
 
-    // TODO: fix bug editing with bindingResult
-    @PostMapping("/users/{id}/edit")
-    public String usersPostEdit(@PathVariable(value = "id") String id, @Valid @ModelAttribute("user") Users user,
+    @PostMapping("/users/{username}/edit")
+    public String usersPostEdit(@PathVariable(value = "username") String username,
+                                @Valid @ModelAttribute("user") Users user,
                                 BindingResult bindingResult) {
-//        if (bindingResult.hasErrors()) {
-//            return "users-templates/users-edit";
-//        }
-        Users editedUser = usersRepository.findById(id).orElseThrow();
+        if (bindingResult.hasErrors()) {
+            return "users-templates/users-edit";
+        }
+        Users editedUser = usersRepository.findById(username).orElseThrow();
         editedUser.setEnabled(user.getEnabled());
         editedUser.setName(user.getName());
         editedUser.setSurname(user.getSurname());
@@ -86,21 +86,22 @@ public class UsersController {
         return "redirect:/users";
     }
 
-    @GetMapping("/users/{id}/edit/authority")
-    public String usersEditAuthority(@PathVariable(value = "id") String id, Model model) {
-        if (!usersRepository.existsById(id)) {
+    @GetMapping("/users/{username}/edit/authority")
+    public String usersEditAuthority(@PathVariable(value = "username") String username, Model model) {
+        if (!usersRepository.existsById(username)) {
             return "redirect:/users";
         }
-        Users user = usersRepository.findById(id).orElseThrow();
+        Users user = usersRepository.findById(username).orElseThrow();
         model.addAttribute("user", user);
         List<Authorities> authorities = authoritiesRepository.findAllByUsername(user);
         model.addAttribute("authorities", authorities);
         return "users-templates/users-edit-authority";
     }
 
-    @PostMapping("/users/{id}/edit/authority")
-    public String usersPostEditAuthority(@PathVariable(value = "id") String id, @RequestParam String[] authorities) {
-        Users user = usersRepository.findById(id).orElseThrow();
+    @PostMapping("/users/{username}/edit/authority")
+    public String usersPostEditAuthority(@PathVariable(value = "username") String username,
+                                         @RequestParam String[] authorities) {
+        Users user = usersRepository.findById(username).orElseThrow();
         List<Authorities> oldAuthoritiesList = authoritiesRepository.findAllByUsername(user);
         authoritiesRepository.deleteAll(oldAuthoritiesList);
         List<Authorities> newAuthoritiesList = new ArrayList<>();
@@ -108,50 +109,54 @@ public class UsersController {
             newAuthoritiesList.add(new Authorities(user, role));
         }
         authoritiesRepository.saveAll(newAuthoritiesList);
-        return "redirect:/users/{id}/edit";
+        return "redirect:/users/{username}/edit";
     }
 
-    @GetMapping("/users/{id}/edit/password")
-    public String usersEditPassword(@PathVariable(value = "id") String id, Model model) {
-        if (!usersRepository.existsById(id)) {
+    @GetMapping("/users/{username}/edit/password")
+    public String usersEditPassword(@PathVariable(value = "username") String username, Model model) {
+        if (!usersRepository.existsById(username)) {
             return "redirect:/users";
         }
-        Users user = usersRepository.findById(id).orElseThrow();
-        model.addAttribute("user", user);
+        model.addAttribute("username", username);
         return "users-templates/users-edit-password";
     }
 
-    //TODO: do validation for password
-    @PostMapping("/users/{id}/edit/password")
-    public String usersPostEditPassword(@PathVariable(value = "id") String id, @RequestParam String password) {
-        Users user = usersRepository.findById(id).orElseThrow();
+    @PostMapping("/users/{username}/edit/password")
+    public String usersPostEditPassword(@PathVariable(value = "username") String username,
+                                        @RequestParam String password) {
+        if (password.isBlank() || password.length() > 50) {
+            return "users-templates/users-edit-password";
+        }
+        Users user = usersRepository.findById(username).orElseThrow();
         String codedPassword = "{bcrypt}" + new BCryptPasswordEncoder().encode(password);
         user.setPassword(codedPassword);
         usersRepository.save(user);
-        return "redirect:/users/{id}/edit";
+        return "redirect:/users/{username}/edit";
     }
 
-    @GetMapping("/users/{id}/edit/username")
-    public String usersEditUsername(@PathVariable(value = "id") String id, Model model) {
-        if (!usersRepository.existsById(id)) {
+    @GetMapping("/users/{username}/edit/username")
+    public String usersEditUsername(@PathVariable(value = "username") String username, Model model) {
+        if (!usersRepository.existsById(username)) {
             return "redirect:/users";
         }
-        Users user = usersRepository.findById(id).orElseThrow();
-        model.addAttribute("user", user);
+        model.addAttribute("username", username);
         return "users-templates/users-edit-username";
     }
 
-    //TODO: do validation for username
-    @PostMapping("/users/{id}/edit/username")
-    public String usersPostEditUsername(@PathVariable(value = "id") String id, @RequestParam String username) {
-        Users user = usersRepository.findById(id).orElseThrow();
-        usersRepository.changeUsername(user.getUsername(), username);
+    @PostMapping("/users/{username}/edit/username")
+    public String usersPostEditUsername(@PathVariable(value = "username") String username,
+                                        @RequestParam String username1) {
+        if (username1.isBlank() || username1.length() > 50) {
+            return "users-templates/users-edit-username";
+        }
+        Users user = usersRepository.findById(username).orElseThrow();
+        usersRepository.changeUsername(user.getUsername(), username1);
         return "redirect:/users";
     }
 
-    @PostMapping("/users/{id}/remove")
-    public String usersPostDelete(@PathVariable(value = "id") String id) {
-        usersRepository.deleteById(id);
+    @PostMapping("/users/{username}/remove")
+    public String usersPostDelete(@PathVariable(value = "username") String username) {
+        usersRepository.deleteById(username);
         return "redirect:/users";
     }
 }

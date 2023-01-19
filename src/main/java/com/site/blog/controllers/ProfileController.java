@@ -20,7 +20,7 @@ public class ProfileController {
     private UsersRepository usersRepository;
 
     @GetMapping("/profile")
-    public String profile(Model model){
+    public String profile(Model model) {
         Users user = usersRepository.findById(getCurrentUsername()).orElseThrow();
         model.addAttribute("user", user);
         return "profile-templates/profile-main";
@@ -33,12 +33,11 @@ public class ProfileController {
         return "profile-templates/profile-edit";
     }
 
-    // TODO: fix bug editing with bindingResult
     @PostMapping("/profile/edit")
     public String profilePostEdit(@Valid @ModelAttribute("user") Users user, BindingResult bindingResult) {
-//        if (bindingResult.hasErrors()) {
-//            return "profile-templates/profile-edit";
-//        }
+        if (bindingResult.hasErrors()) {
+            return "profile-templates/profile-edit";
+        }
         Users editedUser = usersRepository.findById(getCurrentUsername()).orElseThrow();
         editedUser.setName(user.getName());
         editedUser.setSurname(user.getSurname());
@@ -48,30 +47,30 @@ public class ProfileController {
     }
 
     @GetMapping("/profile/edit/username")
-    public String profileEditUsername(Model model) {
-        Users user = usersRepository.findById(getCurrentUsername()).orElseThrow();
-        model.addAttribute("user", user);
+    public String profileEditUsername() {
         return "profile-templates/profile-edit-username";
     }
 
-    //TODO: do validation for username
     @PostMapping("/profile/edit/username")
     public String profilePostEditUsername(@RequestParam String username) {
+        if (username.isBlank() || username.length() > 50) {
+            return "profile-templates/profile-edit-username";
+        }
         Users user = usersRepository.findById(getCurrentUsername()).orElseThrow();
         usersRepository.changeUsername(user.getUsername(), username);
         return "redirect:/login?logout";
     }
 
     @GetMapping("/profile/edit/password")
-    public String usersEditPassword(Model model) {
-        Users user = usersRepository.findById(getCurrentUsername()).orElseThrow();
-        model.addAttribute("user", user);
+    public String usersEditPassword() {
         return "profile-templates/profile-edit-password";
     }
 
-    //TODO: do validation for password
     @PostMapping("/profile/edit/password")
     public String usersPostEditPassword(@RequestParam String password) {
+        if (password.isBlank() || password.length() > 50) {
+            return "profile-templates/profile-edit-password";
+        }
         Users user = usersRepository.findById(getCurrentUsername()).orElseThrow();
         String codedPassword = "{bcrypt}" + new BCryptPasswordEncoder().encode(password);
         user.setPassword(codedPassword);
