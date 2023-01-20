@@ -1,10 +1,8 @@
-package com.site.blog.controllers;
+package com.site.blog.controller;
 
 import com.site.blog.entity.Authorities;
 import com.site.blog.entity.Users;
-import com.site.blog.repo.AuthoritiesRepository;
-import com.site.blog.repo.UsersRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.site.blog.service.AuthoritiesService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,11 +19,11 @@ import java.util.List;
 @Controller
 public class MainController {
 
-    @Autowired
-    private UsersRepository usersRepository;
+    private final AuthoritiesService authoritiesService;
 
-    @Autowired
-    private AuthoritiesRepository authoritiesRepository;
+    public MainController(AuthoritiesService authoritiesService){
+        this.authoritiesService = authoritiesService;
+    }
 
     @GetMapping("/")
     public String home() {
@@ -57,7 +55,7 @@ public class MainController {
         for (String role : authority) {
             authoritiesList.add(new Authorities(user, role));
         }
-        authoritiesRepository.saveAll(authoritiesList);
+        authoritiesService.saveAll(authoritiesList);
         return "redirect:/login";
     }
 }

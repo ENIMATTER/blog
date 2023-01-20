@@ -1,12 +1,11 @@
-package com.site.blog.controllers;
+package com.site.blog.controller;
 
+import com.site.blog.service.AuthoritiesService;
+import com.site.blog.service.UsersService;
 import com.site.blog.validation.UserEditValidation;
 import com.site.blog.validation.UsernameClass;
 import com.site.blog.entity.Authorities;
 import com.site.blog.entity.Users;
-import com.site.blog.repo.AuthoritiesRepository;
-import com.site.blog.repo.UsersRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,15 +18,18 @@ import java.util.List;
 
 @Controller
 public class UsersController {
-    @Autowired
-    private UsersRepository usersRepository;
+    private final UsersService usersService;
 
-    @Autowired
-    private AuthoritiesRepository authoritiesRepository;
+    private final AuthoritiesService authoritiesService;
+
+    public UsersController(UsersService usersService, AuthoritiesService authoritiesService) {
+        this.usersService = usersService;
+        this.authoritiesService = authoritiesService;
+    }
 
     @GetMapping("/users")
     public String usersMain(Model model) {
-        Iterable<Users> users = usersRepository.findAll();
+        Iterable<Users> users = usersService.findAllByOrderByUsernameAsc();
         model.addAttribute("users", users);
         return "users-templates/users-main";
     }
@@ -49,19 +51,19 @@ public class UsersController {
         user.setPassword(codedPassword);
         user.setEnabled(1);
         List<Authorities> authoritiesList = new ArrayList<>();
-        for(String role : authority) {
+        for (String role : authority) {
             authoritiesList.add(new Authorities(user, role));
         }
-        authoritiesRepository.saveAll(authoritiesList);
+        authoritiesService.saveAll(authoritiesList);
         return "redirect:/users";
     }
 
     @GetMapping("/users/{username}/edit")
     public String usersEdit(@PathVariable(value = "username") String username, Model model) {
-        if (!usersRepository.existsById(username)) {
+        if (!usersService.existsById(username)) {
             return "redirect:/users";
         }
-        Users currentUser = usersRepository.findById(username).orElseThrow();
+        Users currentUser = usersService.findById(username);
         UserEditValidation user = new UserEditValidation();
         user.setEnabled(currentUser.getEnabled());
         user.setName(currentUser.getName());
@@ -78,23 +80,23 @@ public class UsersController {
         if (bindingResult.hasErrors()) {
             return "users-templates/users-edit";
         }
-        Users editedUser = usersRepository.findById(username).orElseThrow();
+        Users editedUser = usersService.findById(username);
         editedUser.setEnabled(user.getEnabled());
         editedUser.setName(user.getName());
         editedUser.setSurname(user.getSurname());
         editedUser.setEmail(user.getEmail());
-        usersRepository.save(editedUser);
+        usersService.update(editedUser);
         return "redirect:/users";
     }
 
     @GetMapping("/users/{username}/edit/authority")
     public String usersEditAuthority(@PathVariable(value = "username") String username, Model model) {
-        if (!usersRepository.existsById(username)) {
+        if (!usersService.existsById(username)) {
             return "redirect:/users";
         }
-        Users user = usersRepository.findById(username).orElseThrow();
+        Users user = usersService.findById(username);
         model.addAttribute("user", user);
-        List<Authorities> authorities = authoritiesRepository.findAllByUsername(user);
+        List<Authorities> authorities = authoritiesService.findAllByUsername(user);
         model.addAttribute("authorities", authorities);
         return "users-templates/users-edit-authority";
     }
@@ -102,20 +104,20 @@ public class UsersController {
     @PostMapping("/users/{username}/edit/authority")
     public String usersPostEditAuthority(@PathVariable(value = "username") String username,
                                          @RequestParam String[] authorities) {
-        Users user = usersRepository.findById(username).orElseThrow();
-        List<Authorities> oldAuthoritiesList = authoritiesRepository.findAllByUsername(user);
-        authoritiesRepository.deleteAll(oldAuthoritiesList);
+        Users user = usersService.findById(username);
+        List<Authorities> oldAuthoritiesList = authoritiesService.findAllByUsername(user);
+        authoritiesService.deleteAll(oldAuthoritiesList);
         List<Authorities> newAuthoritiesList = new ArrayList<>();
-        for(String role : authorities) {
+        for (String role : authorities) {
             newAuthoritiesList.add(new Authorities(user, role));
         }
-        authoritiesRepository.saveAll(newAuthoritiesList);
+        authoritiesService.saveAll(newAuthoritiesList);
         return "redirect:/users/{username}/edit";
     }
 
     @GetMapping("/users/{username}/edit/password")
     public String usersEditPassword(@PathVariable(value = "username") String username, Model model) {
-        if (!usersRepository.existsById(username)) {
+        if (!usersService.existsById(username)) {
             return "redirect:/users";
         }
         model.addAttribute("username", username);
@@ -128,16 +130,16 @@ public class UsersController {
         if (password.isBlank() || password.length() > 50) {
             return "users-templates/users-edit-password";
         }
-        Users user = usersRepository.findById(username).orElseThrow();
+        Users user = usersService.findById(username);
         String codedPassword = "{bcrypt}" + new BCryptPasswordEncoder().encode(password);
         user.setPassword(codedPassword);
-        usersRepository.save(user);
+        usersService.update(user);
         return "redirect:/users/{username}/edit";
     }
 
     @GetMapping("/users/{username}/edit/username")
     public String usersEditUsername(@PathVariable(value = "username") String username, Model model) {
-        if (!usersRepository.existsById(username)) {
+        if (!usersService.existsById(username)) {
             return "redirect:/users";
         }
         model.addAttribute("username", username);
@@ -153,14 +155,14 @@ public class UsersController {
         if (bindingResult.hasErrors()) {
             return "users-templates/users-edit-username";
         }
-        Users user = usersRepository.findById(username).orElseThrow();
-        usersRepository.changeUsername(user.getUsername(), username1.getUsername());
+        Users user = usersService.findById(username);
+        usersService.changeUsername(user.getUsername(), username1.getUsername());
         return "redirect:/users";
     }
 
     @PostMapping("/users/{username}/remove")
     public String usersPostDelete(@PathVariable(value = "username") String username) {
-        usersRepository.deleteById(username);
+        usersService.deleteById(username);
         return "redirect:/users";
     }
 }

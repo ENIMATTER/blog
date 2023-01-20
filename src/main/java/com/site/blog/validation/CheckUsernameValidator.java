@@ -1,21 +1,23 @@
 package com.site.blog.validation;
 
 import com.site.blog.entity.Users;
-import com.site.blog.repo.UsersRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.site.blog.service.UsersService;
 import org.springframework.stereotype.Component;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import java.util.List;
 
 @Component
 public class CheckUsernameValidator implements ConstraintValidator<CheckUsername, String> {
-    @Autowired
-    UsersRepository usersRepository;
+    private final UsersService usersService;
+    public CheckUsernameValidator(UsersService usersService){
+        this.usersService = usersService;
+    }
 
     @Override
     public boolean isValid(String enteredValue, ConstraintValidatorContext constraintValidatorContext) {
-        Iterable<Users> users = usersRepository.findAll();
+        List<Users> users = usersService.findAllByOrderByUsernameAsc();
         for (Users user : users) {
             if (enteredValue.trim().equals(user.getUsername())) {
                 return false;

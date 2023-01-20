@@ -1,11 +1,11 @@
-package com.site.blog.controllers;
+package com.site.blog.controller;
 
 import com.site.blog.entity.Articles;
 import com.site.blog.entity.Authorities;
 import com.site.blog.entity.Users;
-import com.site.blog.repo.ArticlesRepository;
-import com.site.blog.repo.AuthoritiesRepository;
 import com.site.blog.repo.UsersRepository;
+import com.site.blog.service.ArticlesService;
+import com.site.blog.service.AuthoritiesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -21,18 +21,21 @@ import static com.site.blog.StaticMethods.getCurrentUsername;
 @Controller
 public class ArticlesController {
 
-    @Autowired
-    private ArticlesRepository articlesRepository;
+    private final ArticlesService articlesService;
+
+    private final AuthoritiesService authoritiesService;
+
+    public ArticlesController(ArticlesService articlesService, AuthoritiesService authoritiesService){
+        this.articlesService = articlesService;
+        this.authoritiesService = authoritiesService;
+    }
 
     @Autowired
     private UsersRepository usersRepository;
 
-    @Autowired
-    private AuthoritiesRepository authoritiesRepository;
-
     @GetMapping("/articles")
     public String articlesMain(Model model) {
-        Iterable<Articles> articles = articlesRepository.findAll();
+        List<Articles> articles = articlesService.findAllByOrderByIdDesc();
         model.addAttribute("articles", articles);
         return "articles-templates/articles-main";
     }
@@ -53,16 +56,16 @@ public class ArticlesController {
         Users user = usersRepository.findById(getCurrentUsername()).orElseThrow();
         article.setUsers_id(user);
         article.setDate_publication(new Date());
-        articlesRepository.save(article);
+        articlesService.add(article);
         return "redirect:/articles";
     }
 
     @GetMapping("/articles/{id}")
     public String articlesDetails(@PathVariable(value = "id") long id, Model model) {
-        if (!articlesRepository.existsById(id)) {
+        if (!articlesService.existsById(id)) {
             return "redirect:/articles";
         }
-        Articles articles = articlesRepository.findById(id).orElseThrow();
+        Articles articles = articlesService.findById(id);
         model.addAttribute("articles", articles);
         Users user = usersRepository.findById(getCurrentUsername()).orElseThrow();
         model.addAttribute("user", user);
@@ -71,25 +74,25 @@ public class ArticlesController {
 
     @PostMapping("/articles/{id}")
     public String articlesPostDetails(@PathVariable(value = "id") long id) {
-        Articles articles = articlesRepository.findById(id).orElseThrow();
+        Articles articles = articlesService.findById(id);
         long views = articles.getViews();
         articles.setViews(views + 1);
-        articlesRepository.save(articles);
+        articlesService.update(articles);
         return "redirect:/articles/{id}";
     }
 
     @GetMapping("/articles/{id}/edit")
     public String articlesEdit(@PathVariable(value = "id") long id, Model model) {
-        if (!articlesRepository.existsById(id)) {
+        if (!articlesService.existsById(id)) {
             return "redirect:/articles";
         }
-        Articles article = articlesRepository.findById(id).orElseThrow();
+        Articles article = articlesService.findById(id);
         Users user = usersRepository.findById(getCurrentUsername()).orElseThrow();
         if (article.getUsers_id().equals(user)) {
             model.addAttribute("article", article);
             return "articles-templates/articles-edit";
         } else {
-            List<Authorities> authoritiesList = authoritiesRepository.findAllByUsername(user);
+            List<Authorities> authoritiesList = authoritiesService.findAllByUsername(user);
             for (Authorities authority : authoritiesList) {
                 if (authority.getAuthority().equals("ROLE_ADMIN")) {
                     model.addAttribute("article", article);
@@ -107,25 +110,25 @@ public class ArticlesController {
         if (bindingResult.hasErrors()) {
             return "articles-templates/articles-edit";
         }
-        Articles editedArticle = articlesRepository.findById(id).orElseThrow();
+        Articles editedArticle = articlesService.findById(id);
         editedArticle.setTitle(article.getTitle());
         editedArticle.setAnons(article.getAnons());
         editedArticle.setFull_text(article.getFull_text());
-        articlesRepository.save(editedArticle);
+        articlesService.update(editedArticle);
         return "redirect:/articles";
     }
 
     @PostMapping("/articles/{id}/remove")
     public String articlesPostDelete(@PathVariable(value = "id") long id) {
-        Articles article = articlesRepository.findById(id).orElseThrow();
+        Articles article = articlesService.findById(id);
         Users user = usersRepository.findById(getCurrentUsername()).orElseThrow();
         if (article.getUsers_id().equals(user)) {
-            articlesRepository.deleteById(id);
+            articlesService.deleteById(id);
         } else {
-            List<Authorities> authoritiesList = authoritiesRepository.findAllByUsername(user);
+            List<Authorities> authoritiesList = authoritiesService.findAllByUsername(user);
             for (Authorities authority : authoritiesList) {
                 if (authority.getAuthority().equals("ROLE_ADMIN")) {
-                    articlesRepository.deleteById(id);
+                    articlesService.deleteById(id);
                 }
             }
         }

@@ -1,10 +1,9 @@
-package com.site.blog.controllers;
+package com.site.blog.controller;
 
+import com.site.blog.service.UsersService;
 import com.site.blog.validation.UserEditValidation;
 import com.site.blog.validation.UsernameClass;
 import com.site.blog.entity.Users;
-import com.site.blog.repo.UsersRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,19 +17,22 @@ import static com.site.blog.StaticMethods.getCurrentUsername;
 @Controller
 public class ProfileController {
 
-    @Autowired
-    private UsersRepository usersRepository;
+    private final UsersService usersService;
+
+    public ProfileController(UsersService usersService){
+        this.usersService = usersService;
+    }
 
     @GetMapping("/profile")
     public String profile(Model model) {
-        Users user = usersRepository.findById(getCurrentUsername()).orElseThrow();
+        Users user = usersService.findById(getCurrentUsername());
         model.addAttribute("user", user);
         return "profile-templates/profile-main";
     }
 
     @GetMapping("/profile/edit")
     public String profileEdit(Model model) {
-        Users currentUser = usersRepository.findById(getCurrentUsername()).orElseThrow();
+        Users currentUser = usersService.findById(getCurrentUsername());
         UserEditValidation user = new UserEditValidation();
         user.setName(currentUser.getName());
         user.setSurname(currentUser.getSurname());
@@ -45,11 +47,11 @@ public class ProfileController {
         if (bindingResult.hasErrors()) {
             return "profile-templates/profile-edit";
         }
-        Users editedUser = usersRepository.findById(getCurrentUsername()).orElseThrow();
+        Users editedUser = usersService.findById(getCurrentUsername());
         editedUser.setName(user.getName());
         editedUser.setSurname(user.getSurname());
         editedUser.setEmail(user.getEmail());
-        usersRepository.save(editedUser);
+        usersService.update(editedUser);
         return "redirect:/profile";
     }
 
@@ -66,8 +68,8 @@ public class ProfileController {
         if (bindingResult.hasErrors()) {
             return "profile-templates/profile-edit-username";
         }
-        Users user = usersRepository.findById(getCurrentUsername()).orElseThrow();
-        usersRepository.changeUsername(user.getUsername(), username.getUsername());
+        Users user = usersService.findById(getCurrentUsername());
+        usersService.changeUsername(user.getUsername(), username.getUsername());
         return "redirect:/login?logout";
     }
 
@@ -81,17 +83,17 @@ public class ProfileController {
         if (password.isBlank() || password.length() > 50) {
             return "profile-templates/profile-edit-password";
         }
-        Users user = usersRepository.findById(getCurrentUsername()).orElseThrow();
+        Users user = usersService.findById(getCurrentUsername());
         String codedPassword = "{bcrypt}" + new BCryptPasswordEncoder().encode(password);
         user.setPassword(codedPassword);
-        usersRepository.save(user);
+        usersService.update(user);
         return "redirect:/profile/edit";
     }
 
     @PostMapping("/profile/remove")
     public String usersPostDelete() {
-        Users user = usersRepository.findById(getCurrentUsername()).orElseThrow();
-        usersRepository.delete(user);
+        Users user = usersService.findById(getCurrentUsername());
+        usersService.delete(user);
         return "redirect:/login?logout";
     }
 }
