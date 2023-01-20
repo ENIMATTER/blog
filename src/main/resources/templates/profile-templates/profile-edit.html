@@ -20,11 +20,6 @@
     <h1>Profile editing</h1><br>
     <div>
         <form th:action="'/profile/edit'" th:object="${user}" method="post">
-            <h4 th:text="'Username: ' + ${user.getUsername()}"></h4>
-
-            <input type="hidden" name="username" th:field="*{username}" class="form-control">
-
-            <input type="hidden" name="password" th:field="*{password}" class="form-control">
 
             <input type="text" required="required" name="name" th:field="*{name}"
                    placeholder="Enter a name" class="form-control">

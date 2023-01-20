@@ -1,5 +1,7 @@
 package com.site.blog.controllers;
 
+import com.site.blog.validation.UserEditValidation;
+import com.site.blog.validation.UsernameClass;
 import com.site.blog.entity.Users;
 import com.site.blog.repo.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,13 +30,18 @@ public class ProfileController {
 
     @GetMapping("/profile/edit")
     public String profileEdit(Model model) {
-        Users user = usersRepository.findById(getCurrentUsername()).orElseThrow();
+        Users currentUser = usersRepository.findById(getCurrentUsername()).orElseThrow();
+        UserEditValidation user = new UserEditValidation();
+        user.setName(currentUser.getName());
+        user.setSurname(currentUser.getSurname());
+        user.setEmail(currentUser.getEmail());
         model.addAttribute("user", user);
         return "profile-templates/profile-edit";
     }
 
     @PostMapping("/profile/edit")
-    public String profilePostEdit(@Valid @ModelAttribute("user") Users user, BindingResult bindingResult) {
+    public String profilePostEdit(@Valid @ModelAttribute("user") UserEditValidation user,
+                                  BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "profile-templates/profile-edit";
         }
@@ -47,17 +54,20 @@ public class ProfileController {
     }
 
     @GetMapping("/profile/edit/username")
-    public String profileEditUsername() {
+    public String profileEditUsername(Model model) {
+        UsernameClass username = new UsernameClass();
+        model.addAttribute("username", username);
         return "profile-templates/profile-edit-username";
     }
 
     @PostMapping("/profile/edit/username")
-    public String profilePostEditUsername(@RequestParam String username) {
-        if (username.isBlank() || username.length() > 50) {
+    public String profilePostEditUsername(@Valid @ModelAttribute("username") UsernameClass username,
+                                          BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
             return "profile-templates/profile-edit-username";
         }
         Users user = usersRepository.findById(getCurrentUsername()).orElseThrow();
-        usersRepository.changeUsername(user.getUsername(), username);
+        usersRepository.changeUsername(user.getUsername(), username.getUsername());
         return "redirect:/login?logout";
     }
 

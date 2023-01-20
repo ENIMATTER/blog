@@ -1,5 +1,7 @@
 package com.site.blog.controllers;
 
+import com.site.blog.validation.UserEditValidation;
+import com.site.blog.validation.UsernameClass;
 import com.site.blog.entity.Authorities;
 import com.site.blog.entity.Users;
 import com.site.blog.repo.AuthoritiesRepository;
@@ -43,12 +45,6 @@ public class UsersController {
         if (bindingResult.hasErrors()) {
             return "users-templates/users-add";
         }
-        Iterable<Users> usersIterable = usersRepository.findAll();
-        for (Users users : usersIterable) {
-            if(users.getUsername().equals(user.getUsername())){
-                return "redirect:/users";
-            }
-        }
         String codedPassword = "{bcrypt}" + new BCryptPasswordEncoder().encode(user.getPassword());
         user.setPassword(codedPassword);
         user.setEnabled(1);
@@ -65,14 +61,19 @@ public class UsersController {
         if (!usersRepository.existsById(username)) {
             return "redirect:/users";
         }
-        Users user = usersRepository.findById(username).orElseThrow();
+        Users currentUser = usersRepository.findById(username).orElseThrow();
+        UserEditValidation user = new UserEditValidation();
+        user.setEnabled(currentUser.getEnabled());
+        user.setName(currentUser.getName());
+        user.setSurname(currentUser.getSurname());
+        user.setEmail(currentUser.getEmail());
         model.addAttribute("user", user);
         return "users-templates/users-edit";
     }
 
     @PostMapping("/users/{username}/edit")
     public String usersPostEdit(@PathVariable(value = "username") String username,
-                                @Valid @ModelAttribute("user") Users user,
+                                @Valid @ModelAttribute("user") UserEditValidation user,
                                 BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "users-templates/users-edit";
@@ -140,17 +141,20 @@ public class UsersController {
             return "redirect:/users";
         }
         model.addAttribute("username", username);
+        UsernameClass username1 = new UsernameClass();
+        model.addAttribute("username1", username1);
         return "users-templates/users-edit-username";
     }
 
     @PostMapping("/users/{username}/edit/username")
     public String usersPostEditUsername(@PathVariable(value = "username") String username,
-                                        @RequestParam String username1) {
-        if (username1.isBlank() || username1.length() > 50) {
+                                        @Valid @ModelAttribute("username1") UsernameClass username1,
+                                        BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
             return "users-templates/users-edit-username";
         }
         Users user = usersRepository.findById(username).orElseThrow();
-        usersRepository.changeUsername(user.getUsername(), username1);
+        usersRepository.changeUsername(user.getUsername(), username1.getUsername());
         return "redirect:/users";
     }
 

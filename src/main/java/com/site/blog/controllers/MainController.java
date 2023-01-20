@@ -50,12 +50,6 @@ public class MainController {
         if (bindingResult.hasErrors()) {
             return "registration";
         }
-        Iterable<Users> usersIterable = usersRepository.findAll();
-        for (Users users : usersIterable) {
-            if (users.getUsername().equals(user.getUsername())) {
-                return "registration";
-            }
-        }
         String codedPassword = "{bcrypt}" + new BCryptPasswordEncoder().encode(user.getPassword());
         user.setPassword(codedPassword);
         user.setEnabled(1);

@@ -1,5 +1,6 @@
 package com.site.blog.entity;
 
+import com.site.blog.validation.CheckUsername;
 import lombok.*;
 
 import javax.persistence.*;
@@ -14,6 +15,7 @@ import javax.validation.constraints.*;
 @Table(name = "users")
 public class Users {
 
+    @CheckUsername
     @Size(max = 50, message = "Username size must be less than 50")
     @NotBlank(message = "Username is mandatory")
     @Id

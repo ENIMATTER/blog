@@ -13,10 +13,11 @@
 <div class="container mt-2 mb-2">
     <h1>Username editing</h1><br>
     <div>
-        <form th:action="'/users/' + ${username} + '/edit/username'" method="post">
-            <input type="text" name="username1" required="required"
-                   placeholder="Enter a new username (must not be empty and have less than 50 characters)"
-                   class="form-control"><br>
+        <form th:action="'/users/' + ${username} + '/edit/username'" th:object="${username1}" method="post">
+            <input type="text" required="required" name="username" th:field="*{username}"
+                   placeholder="Enter a new username" class="form-control">
+            <small th:if="${#fields.hasErrors('username')}" th:errors="*{username}" style="color: red"></small><br>
+
             <button type="submit" class="btn btn-success">Update username</button>
         </form>
     </div>
